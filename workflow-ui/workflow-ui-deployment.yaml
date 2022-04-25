@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-ui-deployment
+  labels:
+    app: workflow-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workflow-ui
+  template:
+    metadata:
+      labels:
+        app: workflow-ui
+    spec:
+      containers:
+      - name: workflow-ui
+        image: nevin160/workflow-ui
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: n-regcred
