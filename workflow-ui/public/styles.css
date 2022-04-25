@@ -1,0 +1,76 @@
+body {
+  border: 1px solid #d7c8c8;
+  height: 500px;
+  width: 500px;
+  margin-left: 36%;
+  margin-top: 100px;
+  border-radius: 20px;
+  font-family: monospace;
+}
+.content-centered {
+align-items: center;
+display: flex;
+flex-direction: column;
+}
+
+#workflow-diagram {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+.task-circle {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  margin-top: 50px;
+  box-shadow: 0px 2px 2px 0px rgb(0 0 0 / 40%);
+}
+.task-name {
+  height: 50px;
+  width: 100px;
+  text-align: center;
+  padding-top: 5px;
+}
+span.color-not-started {
+  background-color: #ebe9e9;
+}
+span.color-in-progress {
+  background-color: rgb(143 142 142);
+  border-color: rgb(143 142 142);
+}
+span.color-complete {
+  background-color: #b1cf8e;
+}
+hr {
+  display: block;
+  border: 0;
+  border-top: 4px solid #ebe9e9;
+  margin: 1em 0;
+  padding: 0;
+  width:80px;
+  box-shadow: 0px 1px 1px 0px rgb(0 0 0 / 20%);
+}
+
+hr.color-not-started {
+  border-color: #ebe9e9;
+}
+hr.color-in-progress {
+  border-color: rgb(143 142 142);
+}
+hr.color-complete {
+  border-color: #b1cf8e;
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+}
+svg#loader path,
+svg#loader rect {
+fill: #FF6700;
+}
+
+svg#loader {
+margin-top: 30px;
+}
+
