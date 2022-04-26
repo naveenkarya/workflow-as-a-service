@@ -2,17 +2,17 @@
 
 ### Build docker image
 ```
-docker build . -t \<username\>/\<modulename\>
+docker build . -t <username>/<modulename>
 ```
 ### Testing docker image
 Assuming your application listens to 8080 port.
 ```
-docker run -p 8080:8080 -d \<username\>/\<modulename\>
+docker run -p 8080:8080 -d <username>/<modulename>
 ```
 ### Changes required for kubernetes
 1. Create a secret for docker credentials. You can replace n-regcred with any secret name you like.
 ```
-kubectl create secret docker-registry n-regcred --docker-server=https://index.docker.io/v1/ --docker-username=\<docker username\> --docker-password=\<pswd\> --docker-email=\<email\>
+kubectl create secret docker-registry n-regcred --docker-server=https://index.docker.io/v1/ --docker-username=<docker username> --docker-password=<pswd> --docker-email=<email>
 ```
 2. Configure this secret in deployment yaml
 ```
