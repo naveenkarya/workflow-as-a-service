@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="../workflow.js"></script>
+    <script src="../dashboard.js"></script>
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <article id="workflowId" data-workflowId="<%=workflowId%>"></article>
-    <h1 class="text-center"> Workflow </h1>
+    
+    <h1 class="text-center"> Dashboard </h1>
     <main class="content-centered">
         
-        <div id="workflow-status" class="content-centered">
+        <div id="workflow-list" class="content-centered">
 
         </div>
         <svg id="loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -46,8 +46,14 @@
                     repeatCount="indefinite" />
             </rect>
         </svg>
-        <div id="workflow-diagram" class="content-centered">
-
+        <div class="content-centered">
+            <form id="create-new-form">
+                <div class="form-group">
+                  <label for="workflowSpecId">Workflow Spec Id</label>
+                  <input type="text" class="form-control" id="workflowSpecId" placeholder="Workflow Spec Id">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
         </div>
     </main>
 </body>
