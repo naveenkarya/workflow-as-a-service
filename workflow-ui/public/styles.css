@@ -1,12 +1,7 @@
 body {
-  border: 1px solid #d7c8c8;
-  height: 500px;
-  width: 500px;
-  margin-left: 36%;
-  margin-top: 100px;
-  border-radius: 20px;
   font-family: monospace;
 }
+
 .content-centered {
 align-items: center;
 display: flex;
@@ -74,3 +69,14 @@ svg#loader {
 margin-top: 30px;
 }
 
+.dropdown {
+  margin: 10px
+}
+
+.dropdown-item {
+  cursor: pointer
+}
+
+.card {
+  padding: 10px
+}

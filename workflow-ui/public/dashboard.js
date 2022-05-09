@@ -16,17 +16,19 @@ $(function () {
             url: url,
             type: 'GET',
             success: function (response) {
-                $("#workflow-status").append(`<h3>${response.name}</h3>`);
-                $("#workflow-status").append(`<h4>${statusCodeMap.get(response.status)}</h4>`);
-                let k = response.length - 1;
-                var html = [];
-                //response.sort((a, b) => a.created - b.created);
-                html.push('<ul class="list">');
-                for (workflow of response) {
-                    html.push(`<li class="item"> <a href = "/workflow/${workflow.id}">${workflow.id} :: ${workflow.name} :: ${statusCodeMap.get(workflow.status)}</a></li>`);
+                if (response.length > 0) {
+                    var html = [];
+                    html.push('<table class="table"><thead><tr><th scope="col">#</th><th scope="col">Workflow</th><th scope="col">Status</th></tr></thead>');
+                    html.push('<tbody>');
+                    for (workflow of response) {
+                        html.push(`<tr><th scope="row">${workflow.id}</th>`);
+                        html.push(`<td><a href = "/workflow/${workflow.id}">${workflow.name}</a></td>`);
+                        html.push(`<td>${statusCodeMap.get(workflow.status)}</a></td>`);
+                        html.push('</tr>');
+                    }
+                    html.push('</tbody></table>');
+                    $("#workflow-list").append(html.join(""));
                 }
-                html.push('</ul>')
-                $("#workflow-list").append(html.join(""));
                 $('#loader').hide();
             },
             error: function (x, e) {
@@ -34,9 +36,14 @@ $(function () {
             }
         });
     }
-    $("#create-new-form").submit(function (event) {
+
+    $("#createWorkflowButton").click(function (event) {
         event.preventDefault();
-        workflowSpecId = $("#workflowSpecId").val();
+        $(".alert").remove();
+        workflowSpecId = $("#workflowSpecId").attr("data-workflowSpecId");
+        if(workflowSpecId == "") {
+            return;
+        }
         url = `/createWorkflow`;
         data = {
             workflowSpecId: workflowSpecId
@@ -46,19 +53,45 @@ $(function () {
             url: url,
             data: JSON.stringify(data),
             dataType: "json",
-            contentType : 'application/json',
+            contentType: 'application/json',
             encode: true,
             success: function (response) {
                 console.log(response);
+                html = [];
+                html.push('<div class="alert alert-primary" role="alert">');
+                html.push('New Workflow created!');
+                html.push('</div>');
+                $("#createWorkflowForm").before(html.join(""));
                 workflowList();
             },
             error: function (x, e) {
                 console.log(e);
             }
         });
-
-    });
+    });    
 
     workflowList();
+
+    function retrieveWorkflowSpecs() {
+        url = '/workflowSpec';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (response) {
+                for(workflowSpec of response) {
+                    $(".dropdown-menu").append(`<li class="dropdown-item" data-workflowSpecId="${workflowSpec.id}">${workflowSpec.name}</li>`);
+                }
+            },
+            error: function (x, e) {
+                console.log(e);
+            }
+        });
+    }
+    retrieveWorkflowSpecs();
+
+    $(document).on('click', '.dropdown-menu li', function() {
+        $("#workflowSpecId").attr("data-workflowSpecId", $(this).attr("data-workflowSpecId"));
+        $("#workflowSpecId").html($(this).html());
+    });
     //setInterval(generateWF(), 30000);
 });

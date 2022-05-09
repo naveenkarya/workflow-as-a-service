@@ -4,57 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <title>Workflow</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <script src="../dashboard.js"></script>
     <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
-    
+
     <h1 class="text-center"> Dashboard </h1>
-    <main class="content-centered">
-        
-        <div id="workflow-list" class="content-centered">
+
+    <main class="container">
+
+        <div id="workflow-list" class="card justify-content-center">
 
         </div>
-        <svg id="loader" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;"
-            xml:space="preserve">
-            <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
-                    repeatCount="indefinite" />
-            </rect>
-            <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
-                    repeatCount="indefinite" />
-            </rect>
-            <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2">
-                <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
-                    repeatCount="indefinite" />
-                <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
-                    repeatCount="indefinite" />
-            </rect>
-        </svg>
-        <div class="content-centered">
-            <form id="create-new-form">
-                <div class="form-group">
-                  <label for="workflowSpecId">Workflow Spec Id</label>
-                  <input type="text" class="form-control" id="workflowSpecId" placeholder="Workflow Spec Id">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
+        <div id="loader" class="content-centered">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                x="0px" y="0px" width="24px" height="30px" viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;"
+                xml:space="preserve">
+                <rect x="0" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                    <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0s" dur="0.6s"
+                        repeatCount="indefinite" />
+                </rect>
+                <rect x="8" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                    <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.15s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.15s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.15s" dur="0.6s"
+                        repeatCount="indefinite" />
+                </rect>
+                <rect x="16" y="10" width="4" height="10" fill="#333" opacity="0.2">
+                    <animate attributeName="opacity" attributeType="XML" values="0.2; 1; .2" begin="0.3s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="height" attributeType="XML" values="10; 20; 10" begin="0.3s" dur="0.6s"
+                        repeatCount="indefinite" />
+                    <animate attributeName="y" attributeType="XML" values="10; 5; 10" begin="0.3s" dur="0.6s"
+                        repeatCount="indefinite" />
+                </rect>
+            </svg>
         </div>
+
+        <div class="card justify-content-center">
+            <div class="card-body" id="createWorkflowForm">
+                <div class="dropdown">
+                    <button id="workflowSpecId" class="btn btn-secondary dropdown-toggle selectedValue" type="button"
+                        data-workflowSpecId="" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Workflow Spec
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    </ul>
+                    <button type="button" class="btn btn-primary" id="createWorkflowButton">Create Workflow
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
     </main>
 </body>
 
