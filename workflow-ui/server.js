@@ -8,7 +8,8 @@ const bodyParser = require('body-parser')
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
-const mock_server = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+const schedulerServiceUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+const backendServiceUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
 // App
 
 const app = express();
@@ -32,7 +33,31 @@ app.get('/', (req, res) => {
 
 app.get('/workflowList', (req, res) => {
     res.contentType("application/json");
-    request.get(`${mock_server}/workflowList`, { timeout: 30000 }, function (error, response, body) {
+    request.get(`${schedulerServiceUrl}/workflowList`, { timeout: 30000 }, function (error, response, body) {
+        console.error('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body);
+        if (error != null) {
+            const errorJson = {
+                error: error
+            }
+            res.send(JSON.stringify(errorJson));
+        }
+        else if (response.statusCode === 200) {
+            res.send(body);
+        }
+        else {
+            const errorJson = {
+                response: response
+            }
+            res.send(JSON.stringify(errorJson));
+        }
+    });
+});
+
+app.get('/workflowSpec', (req, res) => {
+    res.contentType("application/json");
+    request.get(`${backendServiceUrl}/workflowSpec`, { timeout: 30000 }, function (error, response, body) {
         console.error('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', body);
@@ -58,7 +83,7 @@ app.post('/createWorkflow', (req, res) => {
     console.log(req.body);
     res.contentType("application/json");
     request.post({
-        url: `${mock_server}/createWorkflow`,
+        url: `${schedulerServiceUrl}/createWorkflow`,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req.body),
         timeout: 30000
@@ -87,7 +112,7 @@ app.post('/createWorkflow', (req, res) => {
 app.get('/workflowStatus/:workflowId', (req, res) => {
     let workflowId = req.params['workflowId'];
     res.contentType("application/json");
-    request.get(`${mock_server}/getWorkflowStatus/${workflowId}`, { timeout: 30000 }, function (error, response, body) {
+    request.get(`${schedulerServiceUrl}/getWorkflowStatus/${workflowId}`, { timeout: 30000 }, function (error, response, body) {
         console.error('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', body);

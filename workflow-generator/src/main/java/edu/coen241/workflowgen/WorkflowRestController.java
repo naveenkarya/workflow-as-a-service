@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,7 +21,10 @@ public class WorkflowRestController {
         workflowSpecRepository.save(workflowSpecInfo);
         return ResponseEntity.ok(Map.of("workflowSpecId", workflowSpecInfo.getId()));
     }
-
+    @GetMapping("/workflowSpec")
+    public ResponseEntity<List<WorkflowSpecInfo>> getAllWorkflowSpec() {
+        return ResponseEntity.ok(workflowSpecRepository.findAll());
+    }
 
     @GetMapping("/workflowSpec/{workflowSpecId}")
     public ResponseEntity<WorkflowSpecInfo> getWorkflowSpec(@PathVariable String workflowSpecId) {
