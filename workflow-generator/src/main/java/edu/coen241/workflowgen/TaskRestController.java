@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,9 @@ public class TaskRestController {
     @PostMapping("/task/add")
     public ResponseEntity<Map<String, String>> addTask(@RequestBody TaskInfo taskInfo) {
         taskInfoRepository.save(taskInfo);
-        return ResponseEntity.ok(Map.of("taskId", taskInfo.getId()));
+        Map<String, String> result = new HashMap<>();
+        result.put("taskId", taskInfo.getId());
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/task/{taskId}")
