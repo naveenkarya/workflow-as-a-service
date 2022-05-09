@@ -1,0 +1,96 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: mongodb-storageclass
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb-pv
+spec:
+  capacity:
+    storage: 200Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: mongodb-storageclass
+  local:
+    path: /mnt/data
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: size
+              operator: In
+              values:
+                - large
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongodb-pvc
+spec:
+  storageClassName: mongodb-storageclass
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: workflow-spec-db
+spec:
+  serviceName: workflow-spec-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workflow-spec-db
+  template:
+    metadata:
+      labels:
+        app: workflow-spec-db
+        selector: workflow-spec-db
+    spec:
+      containers:
+        - name: workflow-spec-db
+          image: mongo:latest
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+          ports:
+            - containerPort: 27017
+      nodeSelector:
+        size: large
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: workflow-spec-db
+  name: workflow-spec-db-service
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: workflow-spec-db
+  clusterIP: None
+

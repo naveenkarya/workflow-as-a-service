@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-spec-db-config
+data:
+  host: workflow-spec-db-service
+  database: workflow-db

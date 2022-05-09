@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: workflow-gen-service
+spec:
+  selector:
+    app: workflow-gen-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      nodePort: 30081
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-gen-service
+spec:
+  selector:
+    matchLabels:
+      app: workflow-gen-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: workflow-gen-service
+    spec:
+      containers:
+        - name: workflow-gen-service
+          image: nevin160/workflow-generator
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: workflow-spec-db-config
+                  key: database
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: workflow-spec-db-config
+                  key: host
