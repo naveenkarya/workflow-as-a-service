@@ -1,0 +1,27 @@
+.dropdown {
+    margin: 10px
+}
+.moreLinks {
+    margin: 10px;
+}
+.dropdown-item {
+    cursor: pointer
+}
+.close {
+    float: right
+}
+.action-buttons {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    place-content: space-between;
+}
+.card {
+    padding: 10px
+}
+.btn-light {
+    border: 1px solid #b1aeae;
+}
+label {
+    color: gray;
+}
