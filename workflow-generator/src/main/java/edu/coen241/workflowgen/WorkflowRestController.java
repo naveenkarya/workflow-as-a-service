@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,9 @@ public class WorkflowRestController {
     @PostMapping("/workflowSpec/create")
     public ResponseEntity<Map<String, String>> createWorkflowSpec(@RequestBody WorkflowSpecInfo workflowSpecInfo) {
         workflowSpecRepository.save(workflowSpecInfo);
-        return ResponseEntity.ok(Map.of("workflowSpecId", workflowSpecInfo.getId()));
+        Map<String, String> result = new HashMap<>();
+        result.put("workflowSpecId", workflowSpecInfo.getId());
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/workflowSpec")
     public ResponseEntity<List<WorkflowSpecInfo>> getAllWorkflowSpec() {
