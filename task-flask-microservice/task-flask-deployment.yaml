@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-flask-deployment
+  labels:
+    app: flask-dock 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-dock 
+  template:
+    metadata:
+      labels:
+        app: flask-dock 
+    spec:
+      containers:
+      - name: flask-dock
+        image: chelccelia/flask-dock
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: n-regcred
