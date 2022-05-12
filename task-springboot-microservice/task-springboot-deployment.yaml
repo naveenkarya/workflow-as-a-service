@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-springboot-deployment
+  labels:
+    app: springboot-dock
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: springboot-dock
+  template:
+    metadata:
+      labels:
+        app: springboot-dock
+    spec:
+      containers:
+      - name: springboot-dock
+        image: karthikcmscu/springboot-task
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: n-regcred
