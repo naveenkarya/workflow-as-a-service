@@ -80,3 +80,15 @@ margin-top: 30px;
 .card {
   padding: 10px
 }
+
+.attr-val {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+.attr-val input {
+  width: 35%;
+}
+.valueInput {
+  margin-left:5px;
+}

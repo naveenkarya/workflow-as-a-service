@@ -37,6 +37,18 @@ $(function () {
         });
     }
 
+    function getAttrs() {
+        attrs = [];
+        for(i = 1; i <= 4; i++) {
+            let attr = $(`#attr${i}`).val();
+            let val = $(`#val${i}`).val();
+            if(attr != "") {
+                attrs.push({name: attr, value: val});
+            }
+        }
+        return attrs;
+    }
+
     $("#createWorkflowButton").click(function (event) {
         event.preventDefault();
         $(".alert").remove();
@@ -46,8 +58,10 @@ $(function () {
         }
         url = `/createWorkflow`;
         data = {
-            workflowSpecId: workflowSpecId
+            workflowSpecId: workflowSpecId,
+            attributes: getAttrs()
         }
+        
         $.ajax({
             type: "POST",
             url: url,
@@ -62,6 +76,8 @@ $(function () {
                 html.push('New Workflow created!');
                 html.push('</div>');
                 $("#createWorkflowForm").before(html.join(""));
+                $(".attr-val input").val("");
+                $("#workflowSpecId").html("Select Workflow Spec");
                 workflowList();
             },
             error: function (x, e) {
