@@ -1,41 +1,97 @@
 # Flask Python Microservice 
 # Chelsea Fernandes
 
-from flask import Flask, request, redirect, Response
+from flask import Flask, request, redirect, Response, render_template, flash, url_for
+from flask_bootstrap import Bootstrap
 from flask import jsonify
 from threading import Thread 
 import time
+import requests
 
 ############### global variables #################
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 ########################## APIs ###############################
 
-# Expose startTask and completeTask APIs for scheduler to use
+# Expose startTask for scheduler to use
+# use scheduler's completeTask API to send email back?
 
 ############### startTask API #################
+
 #taskid, workflow and attributes from API body 
 #attributes part of post request
 @app.route('/startTask', methods=['POST','GET'])
 def startTask():
 	if request.method =='POST':
-		Thread(target = task).start()
-		return '202 Accepted'
+		# Thread(target = task).start()
+		data = request.get_json()
+		url = "/registration/" + str(data['workflowId']) + "/" + str(data['task_id'])
+		#return url instead (reg)
+		print(url)
+
+		return url
 	if request.method == 'GET':
 		return 'No workflow data provided'
-	return '202 Accepted'
+	return request.get_json()
 
 
-############### completeTask API #################
-@app.route("/completeTask", methods=['POST', 'GET'])
-def completeTask():
-	print("Task Complete")
-	return "202 Accepted"
+############### completeTask #################
 
-####################### The Microservice Task #########################
+# make json and send to scheduler
+def completeTask(email, workflowid, taskid):
+	data = {
+		'workflowId': workflowid,
+		'task_id': taskid,
+		'attributes': [{
+			'name': 'email',
+			'value': email 
+		}]
+	}
+	return data
+
+
+####################### The (NEW) Microservice Task #########################
+
 # prints "hello python" in 1 second increments for 3 seconds.
-def task():
+@app.route("/registration/<workflowid>/<taskid>", methods=['POST','GET'])
+def task(workflowid, taskid):
+	# handle form, POST
+	if request.method == 'POST': 
+		email = request.form['email']
+		data = completeTask(email, workflowid, taskid)
+		print(data)
+		
+		# TO DO: change the current url with the scheduler's completeTask API 
+		requests.post("https://82215c4b-8829-47de-80ae-5d0603e4b86e.mock.pstmn.io/completeTask", json=data)
+		return render_template('submission-confirmation.html', email=email, data=data)
+	# if not submitting form, display form
+	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
+
+
+
+# # prints "hello python" in 1 second increments for 3 seconds.
+# @app.route("/registration/<workflowid>/<taskid>", methods=['GET'])
+# def task(workflowid, taskid):
+# 	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
+
+
+# @app.route("/email", methods=['POST', 'GET'])
+# def handle_form():
+# 	if request.method == 'POST':
+# 		email = request.form['email']
+# 		#get workflowid and taskid
+# 		completeTask()
+# 		return render_template('submission-confirmation.html', email=email)
+# 	return render_template('email-form.html')
+
+
+
+####################### The (OLD) Microservice Task #########################
+
+# prints "hello python" in 1 second increments for 3 seconds.
+def task_old():
 	time.sleep(1)
 	print("Hello Python 1")
 	time.sleep(1)

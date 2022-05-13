@@ -1,0 +1,55 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<style>
+		body { background: #e8f1f9; }
+    .inner-container{
+      margin:100px;
+      border-radius: 25px;
+      border-color:#287EC7;
+      background-color: white;
+      text-align: center;
+    }
+	</style>
+{% endblock %}
+
+
+{% block title %}
+Email Messenger
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="inner-container">
+    <div class="row">
+      <div class="col-md-20 mx-md-auto">
+        <h1 class="pt-5 pb-2">Email Messenger</h1>
+
+        <p class="lead">Enter your email to see something cool happen!</p>
+        <img src="images/paper_plane.png" alt="">
+        <form action="#", method="POST">
+            <div class="form-group">
+              <div class="email" style="padding-left: 50px; padding-right: 50px;">
+                
+                <label for="exampleInputEmail1">Email address</label>
+                
+                <input type="email" class="form-control input-lg" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+             
+              </div>
+              <hr>
+            <button type="submit" class="btn btn-primary btn-lg" value="submit">Submit</button>
+        </form>
+
+        <p class="pt-5"><strong>{{ message }}</strong></p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

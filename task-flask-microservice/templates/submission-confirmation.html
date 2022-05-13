@@ -1,0 +1,42 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<style>
+		body { background: #e8f1f9; }
+    .inner-container{
+      margin:100px;
+      border-radius: 25px;
+      border-color:#287EC7;
+      background-color: white;
+      text-align: center;
+    }
+	</style>
+{% endblock %}
+
+
+{% block title %}
+Email Registration
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="inner-container">
+    <div class="row">
+      <div class="col-md-20 mx-md-auto">
+        <h1 class="pt-5 pb-2">Email Messenger</h1>
+        <!-- <img src="paper_plane.png" alt=""> -->
+        <p class="lead">Form Submitted.</p>
+        <p class="lead">Please check <b>{{ email }}</b> for your message!</p>
+
+        <p class="pt-5">{{ data }}</p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
