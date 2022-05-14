@@ -28,17 +28,25 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<!-- JSON -->
 		<dependency>
 		    <groupId>org.json</groupId>
 		    <artifactId>json</artifactId>
 		    <version>20210307</version>
 		</dependency>
+		
+		<!-- Mail -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
+		
 	</dependencies>
 
 	<build>
