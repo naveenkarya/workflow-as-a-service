@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 public class ExecuteTaskService implements Runnable {
 	
+	// Task: Send email notification
+	
 	private static final String EMAIL_SUBJECT = "Workflow as a Service email : Successfully registered";
 	private static final String EMAIL_BODY = "You are receiving this email since you have just registered for the service!\n\n"
 											+ "Thanks and Regards\n"
@@ -45,7 +47,7 @@ public class ExecuteTaskService implements Runnable {
 	// Task - Send email 
 	private void sendEmail() {
 		System.out.println("Inside sendEmail() :::::: TriggerEmailService : "
-				+ "workflowId = "+workflowId +", taskId = "+taskId +", attributes = "+attributes);
+				+ "workflowId="+workflowId +", taskId="+taskId +", attributes="+attributes);
 		
 		try {
 			String recipient = this.attributes.has("email") ? this.attributes.getString("email") : null;

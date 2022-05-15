@@ -7,14 +7,16 @@ import org.springframework.context.annotation.Configuration;
 public class StartTaskService {
 	
 	public String start() {
-		System.out.println("<<::::: From Spring Boot Microservice task :::::>>");
+		System.out.println("Inside start() :::::: StartTaskService ");
 		
 		String msg = "Task #2 has started!";
 		System.out.println(msg);
 		
 		JSONObject response = new JSONObject();
 		response.put("msg", msg);
-		response.put("status", "TASK_STARTED");
+		response.put("status", "STARTED");
+		
+		System.out.println("Sending the response as Task started to Scheduler service...");
 		
 		return response.toString();
 	}
