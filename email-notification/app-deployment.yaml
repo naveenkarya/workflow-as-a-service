@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: email-notification
-          image: nevin160/email-notification
+          image: karthikcmscu/email-notification:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
