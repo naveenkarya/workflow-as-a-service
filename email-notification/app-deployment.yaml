@@ -1,0 +1,31 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: email-notification
+spec:
+  selector:
+    app: email-notification
+  ports:
+    - protocol: TCP
+      port: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-notification
+spec:
+  selector:
+    matchLabels:
+      app: email-notification
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: email-notification
+    spec:
+      containers:
+        - name: email-notification
+          image: nevin160/email-notification
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
