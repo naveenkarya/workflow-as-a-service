@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 app.get('/workflowList', (req, res) => {
     res.contentType("application/json");
-    request.get(`${schedulerServiceUrl}/workflowList`, { timeout: 30000 }, function (error, response, body) {
+    request.get(`${schedulerServiceUrl}/workflow`, { timeout: 30000 }, function (error, response, body) {
         console.error('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', body);
@@ -79,11 +79,11 @@ app.get('/workflowSpec', (req, res) => {
     });
 });
 
-app.post('/createWorkflow', (req, res) => {
+app.post('/workflow/start', (req, res) => {
     console.log(req.body);
     res.contentType("application/json");
     request.post({
-        url: `${schedulerServiceUrl}/createWorkflow`,
+        url: `${schedulerServiceUrl}/workflow/start`,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req.body),
         timeout: 30000
@@ -109,10 +109,10 @@ app.post('/createWorkflow', (req, res) => {
     });
 });
 
-app.get('/workflowStatus/:workflowId', (req, res) => {
+app.get('/workflow/:workflowId', (req, res) => {
     let workflowId = req.params['workflowId'];
     res.contentType("application/json");
-    request.get(`${schedulerServiceUrl}/getWorkflowStatus/${workflowId}`, { timeout: 30000 }, function (error, response, body) {
+    request.get(`${schedulerServiceUrl}/workflow/${workflowId}`, { timeout: 30000 }, function (error, response, body) {
         console.error('error:', error); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log('body:', body);

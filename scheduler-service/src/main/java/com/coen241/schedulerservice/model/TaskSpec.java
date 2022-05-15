@@ -6,10 +6,9 @@ import com.coen241.schedulerservice.common.Status;
 import lombok.Data;
 
 @Data
-@DynamoDBDocument
 public class TaskSpec {
     private String taskId;
     private String serviceName;
-    @DynamoDBAttribute(attributeName = "order")
+    private String taskName;
     private int order;
 }

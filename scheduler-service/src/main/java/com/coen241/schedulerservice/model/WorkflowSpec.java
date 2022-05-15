@@ -16,6 +16,5 @@ public class WorkflowSpec {
 
     private String specId;
     private String name;
-    @DynamoDBAttribute(attributeName = "taskList")
     private List<TaskSpec> taskSpecList;
 }

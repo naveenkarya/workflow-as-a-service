@@ -21,9 +21,9 @@ $(function () {
                     html.push('<table class="table"><thead><tr><th scope="col">#</th><th scope="col">Workflow</th><th scope="col">Status</th></tr></thead>');
                     html.push('<tbody>');
                     for (workflow of response) {
-                        html.push(`<tr><th scope="row">${workflow.id}</th>`);
-                        html.push(`<td><a href = "/workflow/${workflow.id}">${workflow.name}</a></td>`);
-                        html.push(`<td>${statusCodeMap.get(workflow.status)}</a></td>`);
+                        html.push(`<tr><th scope="row">${workflow.workflowId}</th>`);
+                        html.push(`<td><a href = "/workflow/${workflow.workflowId}">${workflow.name}</a></td>`);
+                        html.push(`<td>${statusCodeMap.get(workflow.workflowStatus)}</a></td>`);
                         html.push('</tr>');
                     }
                     html.push('</tbody></table>');
@@ -95,7 +95,7 @@ $(function () {
             type: 'GET',
             success: function (response) {
                 for(workflowSpec of response) {
-                    $(".dropdown-menu").append(`<li class="dropdown-item" data-workflowSpecId="${workflowSpec.id}">${workflowSpec.name}</li>`);
+                    $(".dropdown-menu").append(`<li class="dropdown-item" data-workflowSpecId="${workflowSpec.specId}">${workflowSpec.name}</li>`);
                 }
             },
             error: function (x, e) {

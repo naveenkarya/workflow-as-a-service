@@ -14,6 +14,7 @@ public class TaskInstance {
     private String serviceName;
     @DynamoDBAttribute(attributeName = "order")
     private int order;
+    private String taskName;
     @DynamoDBAttribute(attributeName = "status")
     private Status status;
 }

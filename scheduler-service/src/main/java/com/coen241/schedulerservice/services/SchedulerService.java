@@ -21,16 +21,18 @@ public class SchedulerService {
     private WorkflowRepository workflowRepository;
     @Autowired
     private RestTemplate restTemplate;
-    private static String backendUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+    @Autowired
+    private WorkflowSpecService workflowSpecService;
+
     public String startWorkflow(CreateWorkflowRequest createWorkflowRequest) {
         //TODO: Discover the url and config it in application config file
-        WorkflowSpec workflowSpec = restTemplate.getForObject(backendUrl + "/workflowSpec/" + createWorkflowRequest.getWorkflowSpecId(), WorkflowSpec.class);
+        WorkflowSpec workflowSpec = workflowSpecService.getWorkflowSpec(createWorkflowRequest.getWorkflowSpecId());
         Workflow workflow = new Workflow();
         workflow.setWorkflowStatus(Status.IN_PROGRESS);
         workflow.setWorkflowSpecId(Objects.requireNonNull(workflowSpec).getSpecId());
 
         List<TaskInstance> taskInstanceList = workflowSpec.getTaskSpecList().stream().map(taskSpec ->
-            TaskInstance.builder().taskId(taskSpec.getTaskId()).serviceName(taskSpec.getServiceName()).order(taskSpec.getOrder()).status(Status.PENDING).build()
+                mapToPendingTaskInstance(taskSpec)
         ).collect(Collectors.toList());
         TaskInstance firstTask = taskInstanceList.stream().filter(taskSpec -> taskSpec.getOrder() == 1).findFirst().get();
         firstTask.setStatus(Status.IN_PROGRESS);
@@ -38,9 +40,15 @@ public class SchedulerService {
         workflow.setWorkflowSpecId(createWorkflowRequest.getWorkflowSpecId());
         workflow.setAttributes(createWorkflowRequest.getAttributes());
         workflow.setTaskInstanceList(taskInstanceList);
+        workflow.setName(workflowSpec.getName());
         Workflow createdWorkflow = workflowRepository.save(workflow);
         startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask));
         return createdWorkflow.getWorkflowId();
+    }
+
+    private TaskInstance mapToPendingTaskInstance(TaskSpec taskSpec) {
+        return TaskInstance.builder().taskId(taskSpec.getTaskId()).serviceName(taskSpec.getServiceName())
+                .order(taskSpec.getOrder()).taskName(taskSpec.getTaskName()).status(Status.PENDING).build();
     }
 
     private StartTaskRequest buildStartTaskRequest(Workflow workflow, TaskInstance firstTask) {
