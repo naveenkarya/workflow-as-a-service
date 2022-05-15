@@ -1,6 +1,7 @@
 package com.coen241.schedulerservice.controller;
 
 import com.coen241.schedulerservice.dtos.WorkflowResponse;
+import com.coen241.schedulerservice.model.CreateWorkflowRequest;
 import com.coen241.schedulerservice.model.Workflow;
 import com.coen241.schedulerservice.repository.WorkflowRepository;
 import com.coen241.schedulerservice.services.SchedulerService;
@@ -33,9 +34,9 @@ public class WorkflowController {
         return new ResponseEntity<>(workflow, HttpStatus.OK);
     }
 
-    @PostMapping("/start/{specId}")
-    public ResponseEntity<WorkflowResponse> startWorkflow(@PathVariable @NonNull String specId) {
-        String workflowId = schedulerService.startWorkflow(specId);
+    @PostMapping("/start")
+    public ResponseEntity<WorkflowResponse> startWorkflow(@RequestBody CreateWorkflowRequest createWorkflowRequest) {
+        String workflowId = schedulerService.startWorkflow(createWorkflowRequest);
         WorkflowResponse workflowResponse = new WorkflowResponse();
         workflowResponse.setWorkflowId(workflowId);
         return new ResponseEntity<>(workflowResponse, HttpStatus.OK);

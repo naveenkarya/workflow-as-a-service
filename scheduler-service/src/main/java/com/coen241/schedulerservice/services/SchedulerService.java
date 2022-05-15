@@ -1,11 +1,11 @@
 package com.coen241.schedulerservice.services;
 
 import com.coen241.schedulerservice.common.Status;
-import com.coen241.schedulerservice.model.Task;
-import com.coen241.schedulerservice.model.Workflow;
-import com.coen241.schedulerservice.model.WorkflowSpec;
+import com.coen241.schedulerservice.dtos.CompleteTaskDto;
+import com.coen241.schedulerservice.model.*;
 import com.coen241.schedulerservice.repository.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SchedulerService {
@@ -20,47 +21,54 @@ public class SchedulerService {
     private WorkflowRepository workflowRepository;
     @Autowired
     private RestTemplate restTemplate;
-
-    public String startWorkflow(String workflowSpecId) {
+    private static String backendUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+    public String startWorkflow(CreateWorkflowRequest createWorkflowRequest) {
         //TODO: Discover the url and config it in application config file
-        WorkflowSpec workflowSpec = restTemplate.getForObject("" + workflowSpecId, WorkflowSpec.class);
+        WorkflowSpec workflowSpec = restTemplate.getForObject(backendUrl + "/workflowSpec/" + createWorkflowRequest.getWorkflowSpecId(), WorkflowSpec.class);
         Workflow workflow = new Workflow();
         workflow.setWorkflowStatus(Status.IN_PROGRESS);
         workflow.setWorkflowSpecId(Objects.requireNonNull(workflowSpec).getSpecId());
 
-        List<Task> taskList = workflowSpec.getTaskList();
-        taskList.forEach(task -> task.setTaskStatus(Status.PENDING));
-        Task firstTask = taskList.stream().filter(task -> task.getTaskOrder() == 1).findFirst().get();
-        taskList.get(taskList.indexOf(firstTask)).setTaskStatus(Status.IN_PROGRESS);
-        workflow.setTaskList(taskList);
-        workflowRepository.save(workflow);
+        List<TaskInstance> taskInstanceList = workflowSpec.getTaskSpecList().stream().map(taskSpec ->
+            TaskInstance.builder().taskId(taskSpec.getTaskId()).serviceName(taskSpec.getServiceName()).order(taskSpec.getOrder()).status(Status.PENDING).build()
+        ).collect(Collectors.toList());
+        TaskInstance firstTask = taskInstanceList.stream().filter(taskSpec -> taskSpec.getOrder() == 1).findFirst().get();
+        firstTask.setStatus(Status.IN_PROGRESS);
+        workflow.setWorkflowStatus(Status.IN_PROGRESS);
+        workflow.setWorkflowSpecId(createWorkflowRequest.getWorkflowSpecId());
+        workflow.setAttributes(createWorkflowRequest.getAttributes());
+        workflow.setTaskInstanceList(taskInstanceList);
+        Workflow createdWorkflow = workflowRepository.save(workflow);
+        startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask));
+        return createdWorkflow.getWorkflowId();
+    }
 
-        startTask(Objects.requireNonNull(firstTask).getTaskId(), workflow.getWorkflowId());
-        return workflow.getWorkflowId();
+    private StartTaskRequest buildStartTaskRequest(Workflow workflow, TaskInstance firstTask) {
+        return StartTaskRequest.builder().taskId(firstTask.getTaskId()).workflowId(workflow.getWorkflowId()).attributes(workflow.getAttributes()).build();
     }
 
     // Calls the startTask API of the given task id
-    private void startTask(String taskId, String workflowId) { // How to send workflowId?
-        restTemplate.getForObject("" + taskId, Task.class); //TODO: Send attributes as well
+    private void startTask(String serviceName, StartTaskRequest startTaskRequest) { // How to send workflowId?
+        ResponseEntity<StartTaskResponse> startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask", startTaskRequest, StartTaskResponse.class);
     }
 
     // Starts the next task if exists or completes the workflow
-    public void completeTask(String taskId, String workflowId) {
-        Workflow workflow = workflowRepository.findById(workflowId);
-        workflow.getTaskList().stream().filter(task -> task.getTaskId().equals(taskId))
-                .forEach(task -> task.setTaskStatus(Status.COMPLETED));
+    public void completeTask(CompleteTaskDto completeTaskDto) {
+        Workflow workflow = workflowRepository.findById(completeTaskDto.getWorkflowId());
+        workflow.getTaskInstanceList().stream().filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
+                .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
 
-        Optional<Task> nextTask = workflow.getTaskList().stream()
-                .sorted(Comparator.comparingInt(Task::getTaskOrder))
-                .filter(task -> task.getTaskStatus().equals(Status.PENDING)).findFirst();
+        Optional<TaskInstance> nextTask = workflow.getTaskInstanceList().stream()
+                .sorted(Comparator.comparingInt(TaskInstance::getOrder))
+                .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst();
 
         if (nextTask.isPresent()) {
-            workflow.getTaskList().stream().filter(task -> task.equals(nextTask.get()))
-                    .forEach(task -> task.setTaskStatus(Status.IN_PROGRESS));
-            startTask(nextTask.get().getTaskId(), workflowId);
+            TaskInstance next = nextTask.get();
+            next.setStatus(Status.IN_PROGRESS);
+            startTask(next.getServiceName(), buildStartTaskRequest(workflow, next));
         } else {
             workflow.setWorkflowStatus(Status.COMPLETED);
         }
-        workflowRepository.update(workflowId, workflow);
+        workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 }
