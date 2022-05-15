@@ -7,11 +7,9 @@ import lombok.Data;
 
 @Data
 @DynamoDBDocument
-public class Task {
-    @DynamoDBAttribute(attributeName = "id")
+public class TaskSpec {
     private String taskId;
+    private String serviceName;
     @DynamoDBAttribute(attributeName = "order")
-    private int taskOrder;
-    @DynamoDBAttribute(attributeName = "status")
-    private Status taskStatus;
+    private int order;
 }
