@@ -8,4 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 public class WorkflowResponse {
     private String workflowId;
+    private String url;
 }

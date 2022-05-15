@@ -8,6 +8,7 @@ import com.coen241.schedulerservice.common.Status;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @DynamoDBTable(tableName = "Workflow")
@@ -22,6 +23,6 @@ public class Workflow {
     private Status workflowStatus;
     @DynamoDBAttribute(attributeName = "taskList")
     private List<Task> taskList;
-    @DynamoDBAttribute(attributeName = "attributesList")
-    private List<Attributes> attributesList;
+    @DynamoDBAttribute
+    private Map<String, String> attributes;
 }

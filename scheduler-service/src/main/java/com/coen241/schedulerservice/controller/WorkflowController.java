@@ -8,36 +8,34 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/workflow")
 public class WorkflowController {
 
     @Autowired
     private SchedulerService schedulerService;
-
     @Autowired
     private WorkflowRepository workflowRepository;
 
-    @GetMapping(value = {"/","/workflows"})
+    @GetMapping(value = {"/","/workflow"})
     public ResponseEntity<List<Workflow>> getAllWorkflows() {
         List<Workflow> workflowList = workflowRepository.findAll();
         return new ResponseEntity<>(workflowList, HttpStatus.OK);
     }
 
-    @GetMapping("/workflows/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Workflow> getWorkflowById(@PathVariable @NonNull String id) {
         Workflow workflow = workflowRepository.findById(id);
         return new ResponseEntity<>(workflow, HttpStatus.OK);
     }
 
-    @PostMapping("/startWorkflow")
-    public ResponseEntity<WorkflowResponse> startWorkflow(@Validated @RequestBody String workflowSpecId) {
-        String workflowId = schedulerService.startWorkflow(workflowSpecId);
-
+    @PostMapping("/start/{specId}")
+    public ResponseEntity<WorkflowResponse> startWorkflow(@PathVariable @NonNull String specId) {
+        String workflowId = schedulerService.startWorkflow(specId);
         WorkflowResponse workflowResponse = new WorkflowResponse();
         workflowResponse.setWorkflowId(workflowId);
         return new ResponseEntity<>(workflowResponse, HttpStatus.OK);

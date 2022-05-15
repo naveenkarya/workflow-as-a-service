@@ -11,7 +11,7 @@ public class Task {
     @DynamoDBAttribute(attributeName = "id")
     private String taskId;
     @DynamoDBAttribute(attributeName = "order")
-    private String taskOrder;
+    private int taskOrder;
     @DynamoDBAttribute(attributeName = "status")
     private Status taskStatus;
 }
