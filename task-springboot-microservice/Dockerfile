@@ -2,8 +2,6 @@
 
 FROM openjdk:11
 
-COPY . /src/task2
+ADD target/springboot-task-0.0.1-SNAPSHOT.jar app.jar
 
-WORKDIR /src/task2
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
