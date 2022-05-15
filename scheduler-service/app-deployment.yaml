@@ -8,10 +8,8 @@ spec:
   ports:
     - protocol: TCP
       port: 8080
-      nodePort: 30082
-  type: NodePort
 ---
-apiVerson: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: scheduler-service
@@ -19,15 +17,15 @@ spec:
   selector:
     matchLabels:
       app: scheduler-service
-    replicas: 1
-    template:
-      metadata:
-        labels:
-          app: scheduler-service
-        spec:
-          containers:
-            - name: scheduler-service
-              image: gowthamra09/scheduler-service
-              imagePullPolicy: Always
-              ports:
-                - containerPort: 8080
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: scheduler-service
+    spec:
+      containers:
+        - name: scheduler-service
+          image: nevin160/scheduler-service
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
