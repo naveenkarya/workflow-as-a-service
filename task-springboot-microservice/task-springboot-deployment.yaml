@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: springboot-task
-        image: karthikcmscu/springboot-task
+        image: karthikcmscu/springboot-task:v1
         ports:
         - containerPort: 80
       imagePullSecrets:
