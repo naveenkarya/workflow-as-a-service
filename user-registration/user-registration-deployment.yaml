@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: task-flask-deployment
+  name: user-registration-deployment
   labels:
     app: flask-dock 
 spec:
@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: flask-dock
-        image: chelccelia/flask-dock
+        image: chelccelia/flask-dock:registration
+        imagePullPolicy: Always 
         ports:
         - containerPort: 80
       imagePullSecrets:
