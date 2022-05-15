@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wfaas</groupId>
-	<artifactId>task2</artifactId>
+	<artifactId>springboot-task</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Task2</name>
 	<description>Task2 for Workflow as a Service (WFaaS)</description>
