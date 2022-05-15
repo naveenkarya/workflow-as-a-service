@@ -21,3 +21,19 @@ spec:
         - containerPort: 8080
       imagePullSecrets:
       - name: n-regcred
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: workflow-ui-service
+  labels:
+    app: workflow-ui-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    nodePort: 30000
+  selector:
+    app: workflow-ui

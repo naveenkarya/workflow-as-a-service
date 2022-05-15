@@ -56,7 +56,7 @@ $(function () {
         if(workflowSpecId == "") {
             return;
         }
-        url = `/createWorkflow`;
+        url = `/workflow/start`;
         data = {
             workflowSpecId: workflowSpecId,
             attributes: getAttrs()
