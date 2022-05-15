@@ -39,6 +39,8 @@ public class Task2Controller {
 	
 	@RequestMapping(value = "/startTask", method = RequestMethod.POST)
 	public String startTask(HttpServletRequest request) {
+		System.out.println("Inside startTask() :::::: Task2Controller ");
+		
 		try {
 			Map<String, String[]> requestMap = request.getParameterMap(); 
 			
@@ -48,6 +50,8 @@ public class Task2Controller {
 			String attributesStr = requestMap.containsKey("attributes") ? requestMap.get("attributes")[0] : null;
 			
 			JSONObject attributes = new JSONObject(attributesStr);
+			
+			System.out.println("Parameters: workflowId="+workflowId +", taskId="+taskId +", attributes="+attributes);
 			
 			if(workflowId != null && workflowId.length() > 0 && taskId != null && taskId.length() > 0 &&
 					attributes != null && attributes.length() > 0) {
@@ -69,9 +73,9 @@ public class Task2Controller {
 			System.out.println("Some error occurred in startTask() ::::: Task2Controller, "+e);
 		}
 		
-		
 		return null;
 	}
+	
 	
 	
 	
