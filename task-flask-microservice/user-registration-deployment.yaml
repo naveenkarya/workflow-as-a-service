@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: flask-dock
-        image: chelccelia/flask-dock
+        image: chelccelia/flask-dock:registration
+        imagePullPolicy: Always 
         ports:
         - containerPort: 80
       imagePullSecrets:
