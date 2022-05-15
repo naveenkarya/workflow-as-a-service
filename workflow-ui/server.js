@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 // Constants
 const PORT = 8080;
 const HOST = '0.0.0.0';
-const schedulerServiceUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+const schedulerServiceUrl = "http://scheduler-service";
 const backendServiceUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
 // App
 
