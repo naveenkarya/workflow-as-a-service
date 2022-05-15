@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: task-springboot-deployment
   labels:
-    app: springboot-dock
+    app: springboot-task
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: springboot-dock
+      app: springboot-task
   template:
     metadata:
       labels:
-        app: springboot-dock
+        app: springboot-task
     spec:
       containers:
-      - name: springboot-dock
+      - name: springboot-task
         image: karthikcmscu/springboot-task
         ports:
         - containerPort: 80
