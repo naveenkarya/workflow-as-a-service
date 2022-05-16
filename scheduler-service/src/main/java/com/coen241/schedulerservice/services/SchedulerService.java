@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,8 @@ public class SchedulerService {
         workflow.setAttributes(createWorkflowRequest.getAttributes());
         workflow.setTaskInstanceList(taskInstanceList);
         workflow.setName(workflowSpec.getName());
+        workflow.setCreatedAt(Instant.now().toString());
+        workflow.setUpdatedAt(workflow.getCreatedAt());
         Workflow createdWorkflow = workflowRepository.save(workflow);
 
         startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask));
@@ -105,6 +108,7 @@ public class SchedulerService {
         } else {
             workflow.setWorkflowStatus(Status.COMPLETED);
         }
+        workflow.setUpdatedAt(Instant.now().toString());
         workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 
@@ -114,6 +118,7 @@ public class SchedulerService {
         workflow.getTaskInstanceList().stream()
                 .filter(taskInstance -> taskInstance.getTaskId().equals(startTaskRequest.getTaskId()))
                 .findFirst().get().setUrl(url);
+        workflow.setUpdatedAt(Instant.now().toString());
         workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 }

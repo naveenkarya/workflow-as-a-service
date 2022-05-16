@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.coen241.schedulerservice.common.Status;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 

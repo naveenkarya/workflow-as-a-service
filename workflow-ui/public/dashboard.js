@@ -27,7 +27,12 @@ $(function () {
                         html.push(`<tr><th scope="row">${workflow.workflowId}</th>`);
                         html.push(`<td><a href = "/workflow/${workflow.workflowId}">${workflow.name}</a></td>`);
                         html.push(`<td>${statusCodeMap.get(workflow.workflowStatus)}</td>`);
-                        html.push(`<td>${workflow.updatedAt}</td>`);
+                        let lastUpdated = "";
+                        if(workflow.updatedAt) {
+                            let lastUpdatedDate = new Date(workflow.updatedAt);
+                            lastUpdated = lastUpdatedDate.toLocaleString();
+                        }
+                        html.push(`<td>${lastUpdated}</td>`);
                         html.push('</tr>');
                     }
                     html.push('</tbody></table>');
