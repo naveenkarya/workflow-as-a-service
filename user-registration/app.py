@@ -42,11 +42,10 @@ def startTask():
 def completeTask(email, workflowid, taskid):
 	data = {
 		'workflowId': workflowid,
-		'task_id': taskid,
-		'attributes': [{
-			'name': 'email',
-			'value': email 
-		}]
+		'taskId': taskid,
+		'attributes': {
+			'email': email 
+		}
 	}
 	return data
 
@@ -63,7 +62,7 @@ def task(workflowid, taskid):
 		print(data)
 		
 		# TO DO: change the current url with the scheduler's completeTask API 
-		requests.post("https://82215c4b-8829-47de-80ae-5d0603e4b86e.mock.pstmn.io/completeTask", json=data)
+		requests.post("http://scheduler-service:8080/task/complete", json=data)
 		return render_template('submission-confirmation.html', email=email, data=data)
 	# if not submitting form, display form
 	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
