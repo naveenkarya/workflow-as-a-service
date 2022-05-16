@@ -42,7 +42,8 @@ public class Task2Controller {
 		System.out.println("Inside startTask() :::::: Task2Controller ");
 		
 		try {
-			Map<String, String[]> requestMap = request.getParameterMap(); 
+			Map<String, String[]> requestMap = request.getParameterMap();
+			System.out.println("Request Map: "+requestMap);
 			
 			// Get workflowId, taskId, Attributes from the request
 			String workflowId = requestMap.containsKey("workflowId") ? requestMap.get("workflowId")[0] : null;
