@@ -22,7 +22,7 @@ public class WorkflowController {
     @Autowired
     private WorkflowRepository workflowRepository;
 
-    @GetMapping(value = {"/","/workflow"})
+    @GetMapping
     public ResponseEntity<List<Workflow>> getAllWorkflows() {
         List<Workflow> workflowList = workflowRepository.findAll();
         return new ResponseEntity<>(workflowList, HttpStatus.OK);

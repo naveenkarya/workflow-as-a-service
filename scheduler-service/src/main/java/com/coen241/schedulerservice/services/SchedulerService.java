@@ -71,7 +71,7 @@ public class SchedulerService {
         startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask",
                                                             startTaskRequest, StartTaskResponse.class);
 
-        String url = Objects.requireNonNull(startTaskResponse.getBody()).getUrl();
+        String url = startTaskResponse.getBody() != null ? startTaskResponse.getBody().getUrl() : null;
         if (url != null) { persistFormUrl(startTaskRequest, url); }
     }
 

@@ -1,12 +1,12 @@
 $(function () {
     const statusColorMap = new Map();
-    statusColorMap.set('Completed', 'complete');
-    statusColorMap.set('In_Progress', 'in-progress');
-    statusColorMap.set('Not_Started', 'not-started');
+    statusColorMap.set('COMPLETED', 'complete');
+    statusColorMap.set('IN_PROGRESS', 'in-progress');
+    statusColorMap.set('PENDING', 'not-started');
     const statusCodeMap = new Map();
-    statusCodeMap.set('Completed', 'Completed');
-    statusCodeMap.set('In_Progress', 'In Progress');
-    statusCodeMap.set('Not_Started', 'Not Started');
+    statusCodeMap.set('COMPLETED', 'Completed');
+    statusCodeMap.set('IN_PROGRESS', 'In Progress');
+    statusCodeMap.set('PENDING', 'Pending');
 
     function workflowList() {
         $("#workflow-list").empty();
@@ -38,17 +38,15 @@ $(function () {
     }
 
     function getAttrs() {
-        attrs = [];
+        attrMap = {};
         for(i = 1; i <= 4; i++) {
             let attr = $(`#attr${i}`).val();
             let val = $(`#val${i}`).val();
             if(attr != "") {
-                obj = {};
-                obj[attr] = val;
-                attrs.push(obj);
+                attrMap[attr] = val;
             }
         }
-        return attrs;
+        return attrMap;
     }
 
     $("#createWorkflowButton").click(function (event) {
@@ -71,8 +69,9 @@ $(function () {
             dataType: "json",
             contentType: 'application/json',
             encode: true,
-            success: function (response) {
+            success: function (response, status) {
                 console.log(response);
+                console.log("status is " + status);
                 html = [];
                 html.push('<div class="alert alert-primary" role="alert">');
                 html.push('New Workflow created!');

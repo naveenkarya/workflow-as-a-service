@@ -35,12 +35,13 @@ app.get('/workflowList', (req, res) => {
     res.contentType("application/json");
     request.get(`${schedulerServiceUrl}/workflow`, { timeout: 30000 }, function (error, response, body) {
         console.error('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('statusCode:', response); // Print the response status code if a response was received
         console.log('body:', body);
         if (error != null) {
             const errorJson = {
                 error: error
             }
+            res.statusCode = 500;
             res.send(JSON.stringify(errorJson));
         }
         else if (response.statusCode === 200) {
@@ -50,7 +51,7 @@ app.get('/workflowList', (req, res) => {
             const errorJson = {
                 response: response
             }
-            res.send(JSON.stringify(errorJson));
+            res.status(response.statusCode).send(JSON.stringify(errorJson));
         }
     });
 });
@@ -104,12 +105,13 @@ app.post('/workflow/start', (req, res) => {
             const errorJson = {
                 response: response
             }
+            res.
             res.send(JSON.stringify(errorJson));
         }
     });
 });
 
-app.get('/workflow/:workflowId', (req, res) => {
+app.get('/workflowStatus/:workflowId', (req, res) => {
     let workflowId = req.params['workflowId'];
     res.contentType("application/json");
     request.get(`${schedulerServiceUrl}/workflow/${workflowId}`, { timeout: 30000 }, function (error, response, body) {

@@ -1,12 +1,13 @@
 $(function () {
-  const statusColorMap = new Map();
-  statusColorMap.set('Completed', 'complete');
-  statusColorMap.set('In_Progress', 'in-progress');
-  statusColorMap.set('Pending', 'not-started');
-  const statusCodeMap = new Map();
-  statusCodeMap.set('Completed', 'Completed');
-  statusCodeMap.set('In_Progress', 'In Progress');
-  statusCodeMap.set('Pending', 'Not Started');
+    const statusColorMap = new Map();
+    statusColorMap.set('COMPLETED', 'complete');
+    statusColorMap.set('IN_PROGRESS', 'in-progress');
+    statusColorMap.set('PENDING', 'not-started');
+    const statusCodeMap = new Map();
+    statusCodeMap.set('COMPLETED', 'Completed');
+    statusCodeMap.set('IN_PROGRESS', 'In Progress');
+    statusCodeMap.set('PENDING', 'Pending');
+
   $(document.body).tooltip({
       selector: "[title]",
       //trigger: "click",
@@ -18,14 +19,14 @@ $(function () {
       $("#workflow-status").empty();
       $('#loader').show();
       const workflowId = $("#workflowId").attr("data-workflowId");
-      url = `/workflow/${workflowId}`;
+      url = `/workflowStatus/${workflowId}`;
       $.ajax({
           url: url,
           type: 'GET',
           success: function (response) {
               $("#workflow-status").append(`<h3>${response.name}</h3>`);
               $("#workflow-status").append(`<h4>${statusCodeMap.get(response.workflowStatus)}</h4>`);
-              let k = response.taskList.length - 1;
+              let k = response.taskInstanceList.length - 1;
               var html = [];
               response.taskInstanceList.sort((a, b) => a.order - b.order);
               for (task of response.taskInstanceList) {
