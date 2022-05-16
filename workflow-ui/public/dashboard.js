@@ -18,12 +18,16 @@ $(function () {
             success: function (response) {
                 if (response.length > 0) {
                     var html = [];
-                    html.push('<table class="table"><thead><tr><th scope="col">#</th><th scope="col">Workflow</th><th scope="col">Status</th></tr></thead>');
+                    html.push('<table class="table"><thead><tr><th scope="col">#</th><th scope="col">Workflow</th><th scope="col">Status</th><th scope="col">Last Updated</th></tr></thead>');
                     html.push('<tbody>');
+                    response.sort(function(a,b){
+                        return new Date(b.updatedAt) - new Date(a.updatedAt);
+                    });
                     for (workflow of response) {
                         html.push(`<tr><th scope="row">${workflow.workflowId}</th>`);
                         html.push(`<td><a href = "/workflow/${workflow.workflowId}">${workflow.name}</a></td>`);
-                        html.push(`<td>${statusCodeMap.get(workflow.workflowStatus)}</a></td>`);
+                        html.push(`<td>${statusCodeMap.get(workflow.workflowStatus)}</td>`);
+                        html.push(`<td>${workflow.updatedAt}</td>`);
                         html.push('</tr>');
                     }
                     html.push('</tbody></table>');
