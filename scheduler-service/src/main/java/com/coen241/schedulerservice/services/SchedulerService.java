@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,7 +78,10 @@ public class SchedulerService {
         workflow.getTaskInstanceList().stream()
                 .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
                 .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
-
+        // Copy all attributes from the response
+        for(Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
+            workflow.getAttributes().put(attribute.getKey(), attribute.getValue());
+        }
         Optional<TaskInstance> nextTask = workflow.getTaskInstanceList().stream()
                 .sorted(Comparator.comparingInt(TaskInstance::getOrder))
                 .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst();
