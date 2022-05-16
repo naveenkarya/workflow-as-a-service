@@ -27,11 +27,10 @@ def startTask():
 	if request.method =='POST':
 		# Thread(target = task).start()
 		data = request.get_json()
-		url = "/registration/" + str(data['workflowId']) + "/" + str(data['task_id'])
+		url = "/registration/" + str(data['workflowId']) + "/" + str(data['taskId'])
 		#return url instead (reg)
 		print(url)
-
-		return url
+		return {"url" : url}
 	if request.method == 'GET':
 		return 'No workflow data provided'
 	return request.get_json()
@@ -108,7 +107,7 @@ def hello():
 ############### Start App #################
 
 if __name__ == '__main__':
-	app.run(host="0.0.0.0", port=80)
+	app.run(host="0.0.0.0", port=8080)
 
 
 ################ old code ################
