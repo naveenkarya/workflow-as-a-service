@@ -5,6 +5,9 @@ import com.coen241.schedulerservice.dtos.CompleteTaskDto;
 import com.coen241.schedulerservice.model.*;
 import com.coen241.schedulerservice.repository.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -65,11 +68,20 @@ public class SchedulerService {
     // Calls the startTask API of the given task id
     private void startTask(String serviceName, StartTaskRequest startTaskRequest) {
         ResponseEntity<StartTaskResponse> startTaskResponse;
-        startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask",
-                                                            startTaskRequest, StartTaskResponse.class);
-
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<StartTaskRequest> entity = new HttpEntity<>(startTaskRequest, headers);
+        startTaskResponse = restTemplate.postForEntity(getStartTaskUrl(serviceName),
+                entity, StartTaskResponse.class);
         String url = startTaskResponse.getBody() != null ? startTaskResponse.getBody().getUrl() : null;
-        if (url != null) { persistFormUrl(startTaskRequest, url); }
+        if (url != null) {
+            persistFormUrl(startTaskRequest, url);
+        }
+    }
+
+    private String getStartTaskUrl(String serviceName) {
+        return "http://" + serviceName + ":8080/startTask";
     }
 
     // Starts the next task if exists or completes the workflow
@@ -79,7 +91,7 @@ public class SchedulerService {
                 .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
                 .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
         // Copy all attributes from the response
-        for(Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
+        for (Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
             workflow.getAttributes().put(attribute.getKey(), attribute.getValue());
         }
         Optional<TaskInstance> nextTask = workflow.getTaskInstanceList().stream()
