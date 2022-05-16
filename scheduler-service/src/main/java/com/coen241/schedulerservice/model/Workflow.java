@@ -27,4 +27,8 @@ public class Workflow {
     private List<TaskInstance> taskInstanceList;
     @DynamoDBAttribute
     private Map<String, String> attributes;
+    @DynamoDBAttribute
+    private String createdAt;
+    @DynamoDBAttribute
+    private String updatedAt;
 }
