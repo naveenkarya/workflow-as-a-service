@@ -92,3 +92,9 @@ margin-top: 30px;
 .valueInput {
   margin-left:5px;
 }
+.tooltip-inner {
+  font-weight: bold;
+}
+.moreLinks {
+  margin-top: 50px;
+}

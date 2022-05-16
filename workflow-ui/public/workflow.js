@@ -10,7 +10,7 @@ $(function () {
 
   $(document.body).tooltip({
       selector: "[title]",
-      //trigger: "click",
+      trigger: "click",
       placement: "auto bottom",
       html: "true"
   });
@@ -32,7 +32,10 @@ $(function () {
               for (task of response.taskInstanceList) {
                   html.push('<div class="task">');
                   const task_status_color = statusColorMap.get(task.status);
-                  const title = `Task: ${task.taskName}<br/>Status: ${statusCodeMap.get(task.status)}`;
+                  let title = `Task: ${task.taskName}<br/>Status: ${statusCodeMap.get(task.status)}`;
+                  if(task.url != null && task.status == 'IN_PROGRESS') {
+                      title = title + `<br/><a href='${task.url}'>Pending Form</a>`;
+                  }
                   html.push(`<span class="task-circle color-${task_status_color}" data-toggle="tooltip" title="${title}"></span>`);
                   html.push(`<span class="task-name">${task.taskName}</span>`);
                   html.push('</div>');
@@ -51,5 +54,5 @@ $(function () {
       });
   }
   generateWF();
-  //setInterval(generateWF(), 5000);
+  setInterval(generateWF, 8000);
 });
