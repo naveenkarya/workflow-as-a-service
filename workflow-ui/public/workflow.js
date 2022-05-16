@@ -51,5 +51,5 @@ $(function () {
       });
   }
   generateWF();
-  //setInterval(generateWF(), 30000);
+  //setInterval(generateWF(), 5000);
 });

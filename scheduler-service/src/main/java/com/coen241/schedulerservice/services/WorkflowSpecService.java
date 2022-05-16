@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class WorkflowSpecService {
     @Autowired
     private RestTemplate restTemplate;
-    private static String backendUrl = "https://3bd9eb30-a041-4fa7-90c7-9f2b6f92a960.mock.pstmn.io";
+    private static String backendUrl = "http://workflow-gen-service:8080";
     public WorkflowSpec getWorkflowSpec(String workflowSpecId) {
         return restTemplate.getForObject(backendUrl + "/workflowSpec/" + workflowSpecId, WorkflowSpec.class);
     }

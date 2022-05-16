@@ -96,7 +96,7 @@ $(function () {
             type: 'GET',
             success: function (response) {
                 for(workflowSpec of response) {
-                    $(".dropdown-menu").append(`<li class="dropdown-item" data-workflowSpecId="${workflowSpec.specId}">${workflowSpec.name}</li>`);
+                    $(".dropdown-menu").append(`<li class="dropdown-item" data-workflowSpecId="${workflowSpec.id}">${workflowSpec.name}</li>`);
                 }
             },
             error: function (x, e) {
@@ -110,5 +110,5 @@ $(function () {
         $("#workflowSpecId").attr("data-workflowSpecId", $(this).attr("data-workflowSpecId"));
         $("#workflowSpecId").html($(this).html());
     });
-    //setInterval(generateWF(), 30000);
+    
 });
