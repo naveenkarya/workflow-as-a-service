@@ -26,4 +26,6 @@ public class TaskInstance {
     @DynamoDBTypeConvertedEnum
     @DynamoDBAttribute
     private Status status;
+    @DynamoDBAttribute
+    private String url;
 }

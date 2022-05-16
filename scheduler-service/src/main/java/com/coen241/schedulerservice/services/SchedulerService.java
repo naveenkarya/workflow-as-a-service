@@ -25,7 +25,6 @@ public class SchedulerService {
     private WorkflowSpecService workflowSpecService;
 
     public String startWorkflow(CreateWorkflowRequest createWorkflowRequest) {
-        //TODO: Discover the url and config it in application config file
         WorkflowSpec workflowSpec = workflowSpecService.getWorkflowSpec(createWorkflowRequest.getWorkflowSpecId());
         Workflow workflow = new Workflow();
         workflow.setWorkflowStatus(Status.IN_PROGRESS);
@@ -48,6 +47,7 @@ public class SchedulerService {
         workflow.setTaskInstanceList(taskInstanceList);
         workflow.setName(workflowSpec.getName());
         Workflow createdWorkflow = workflowRepository.save(workflow);
+
         startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask));
         return createdWorkflow.getWorkflowId();
     }
@@ -66,10 +66,13 @@ public class SchedulerService {
     }
 
     // Calls the startTask API of the given task id
-    private void startTask(String serviceName, StartTaskRequest startTaskRequest) { // How to send workflowId?
+    private void startTask(String serviceName, StartTaskRequest startTaskRequest) {
         ResponseEntity<StartTaskResponse> startTaskResponse;
         startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask",
                                                             startTaskRequest, StartTaskResponse.class);
+
+        String url = Objects.requireNonNull(startTaskResponse.getBody()).getUrl();
+        if (url != null) { persistFormUrl(startTaskRequest, url); }
     }
 
     // Starts the next task if exists or completes the workflow
@@ -90,6 +93,15 @@ public class SchedulerService {
         } else {
             workflow.setWorkflowStatus(Status.COMPLETED);
         }
+        workflowRepository.update(workflow.getWorkflowId(), workflow);
+    }
+
+    // Persist Registration form url
+    private void persistFormUrl(StartTaskRequest startTaskRequest, String url) {
+        Workflow workflow = workflowRepository.findById(startTaskRequest.getWorkflowId());
+        workflow.getTaskInstanceList().stream()
+                .filter(taskInstance -> taskInstance.getTaskId().equals(startTaskRequest.getTaskId()))
+                .findFirst().get().setUrl(url);
         workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 }
