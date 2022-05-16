@@ -1,4 +1,4 @@
-package edu.coen241.workflowgen;
+package edu.coen241.workflowgen.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

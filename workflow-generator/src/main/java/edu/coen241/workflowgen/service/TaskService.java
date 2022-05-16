@@ -1,5 +1,7 @@
-package edu.coen241.workflowgen;
+package edu.coen241.workflowgen.service;
 
+import edu.coen241.workflowgen.model.TaskInfo;
+import edu.coen241.workflowgen.model.TaskName;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

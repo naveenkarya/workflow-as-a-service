@@ -1,4 +1,4 @@
-package edu.coen241.workflowgen;
+package edu.coen241.workflowgen.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,16 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class WorkflowSpecInfo {
+public class TaskInfo {
     @Id
     private String id;
-    private String name;
-    private List<TaskOrder> taskOrderList;
+    private String taskName;
+    private String serviceName;
+    private String dockerImage;
+    private String cpuLimit;
+    private String memoryLimit;
 
 }

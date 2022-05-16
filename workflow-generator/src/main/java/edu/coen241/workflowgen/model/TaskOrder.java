@@ -1,4 +1,4 @@
-package edu.coen241.workflowgen;
+package edu.coen241.workflowgen.model;
 
 import lombok.*;
 

@@ -1,5 +1,9 @@
-package edu.coen241.workflowgen;
+package edu.coen241.workflowgen.controller;
 
+import edu.coen241.workflowgen.model.TaskInfo;
+import edu.coen241.workflowgen.model.TaskName;
+import edu.coen241.workflowgen.repository.TaskInfoRepository;
+import edu.coen241.workflowgen.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +40,12 @@ public class TaskRestController {
     @DeleteMapping("/task/{taskId}")
     public ResponseEntity<Void> deleteTask(@PathVariable String taskId) {
         taskInfoRepository.deleteById(taskId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping("/task")
+    public ResponseEntity<Void> deleteAllTasks() {
+        taskInfoRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
