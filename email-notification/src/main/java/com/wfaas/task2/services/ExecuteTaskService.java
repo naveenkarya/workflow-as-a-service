@@ -1,14 +1,16 @@
 package com.wfaas.task2.services;
 
-import org.json.JSONObject;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
+
+import com.wfaas.task2.dto.TaskDto;
 
 public class ExecuteTaskService implements Runnable {
 	
@@ -26,9 +28,9 @@ public class ExecuteTaskService implements Runnable {
 	private JavaMailSenderImpl javaMailSender;
 	private String workflowId;
 	private String taskId;
-	private JSONObject attributes;
+	private Map<String, String> attributes;
 	
-	public ExecuteTaskService(JavaMailSenderImpl javaMailSender, String workflowId, String taskId, JSONObject attributes){
+	public ExecuteTaskService(JavaMailSenderImpl javaMailSender, String workflowId, String taskId, Map<String, String> attributes){
 		this.javaMailSender = javaMailSender;
 		this.workflowId = workflowId;
 		this.taskId = taskId;
@@ -46,11 +48,12 @@ public class ExecuteTaskService implements Runnable {
 	
 	// Task - Send email 
 	private void sendEmail() {
-		System.out.println("Inside sendEmail() :::::: TriggerEmailService : "
-				+ "workflowId="+workflowId +", taskId="+taskId +", attributes="+attributes);
+		System.out.println("Inside sendEmail() :::::: TriggerEmailService ");
+		System.out.println("workflowId="+workflowId +", taskId="+taskId +", attributes="+attributes);
 		
 		try {
-			String recipient = this.attributes.has("email") ? this.attributes.getString("email") : null;
+			String recipient = this.attributes.containsKey("email") ? this.attributes.get("email") : null;
+			System.out.println("Recipient email address "+recipient);
 			
 			if(recipient != null && recipient.length() > 0) {
 				SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -71,33 +74,31 @@ public class ExecuteTaskService implements Runnable {
 				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes);
 			}
 			else {
-				System.out.println("Error: Recipient cannot be empty!");
+				System.out.println("Error: Recipient email address cannot be empty!");
 			}
 		}
 		catch(Exception e) {
 			System.out.println("Some error occurred in sendEmail() ::::: TriggerEmailService, "+e);
+			e.printStackTrace();
 		}
 	}
 	
 	
-	public void sendResponseToScheduler(String workflowId, String taskId, JSONObject attributes) {
-		String URL = taskId +"-service:8080/completeTask/"; // check for this URL
+	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes) {
+		System.out.println("Inside sendResponseToScheduler() :::::: ExecuteTaskService ");
+		
+		String URL = "http://scheduler-service:8080/completeTask"; // check for this URL
+		System.out.println("URL to send POST request to Scheduler service: "+URL);
 		
 		try {
-			HttpHeaders headers = new HttpHeaders();
-			headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+			/*HttpHeaders headers = new HttpHeaders();
+			headers.add(HttpHeaders.CONTENT_TYPE, "application/json");*/
 			
-			JSONObject body = new JSONObject();
-			body.put("workflowId", workflowId);
-			body.put("taskId", taskId);
-			body.put("attributes", attributes);
 			
-			body.put("status", "COMPLETED");
-			body.put("msg", "Task #2 is successfully completed");
-			
+			TaskDto taskDto = new TaskDto(workflowId, taskId, attributes);
 			
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity<String> requestEntity = new HttpEntity<String>(body.toString(), headers);
+			HttpEntity<TaskDto> requestEntity = new HttpEntity<TaskDto>(taskDto);
 			
 			// Send request (response) to Scheduler Service 
 			ResponseEntity<String> responseEntity = restTemplate.exchange(URL, HttpMethod.POST, requestEntity, String.class);
@@ -107,6 +108,7 @@ public class ExecuteTaskService implements Runnable {
 		}
 		catch(Exception e) {
 			System.out.println("Some error occurred in sendResponseToScheduler() ::::: TriggerEmailService, "+e);
+			e.printStackTrace();
 		}
 	}
 	
