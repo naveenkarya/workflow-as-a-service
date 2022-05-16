@@ -43,7 +43,9 @@ $(function () {
             let attr = $(`#attr${i}`).val();
             let val = $(`#val${i}`).val();
             if(attr != "") {
-                attrs.push({name: attr, value: val});
+                obj = {};
+                obj[attr] = val;
+                attrs.push(obj);
             }
         }
         return attrs;
