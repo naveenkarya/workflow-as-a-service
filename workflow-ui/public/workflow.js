@@ -34,7 +34,11 @@ $(function () {
                   const task_status_color = statusColorMap.get(task.status);
                   let title = `Task: ${task.taskName}<br/>Status: ${statusCodeMap.get(task.status)}`;
                   if(task.url != null && task.status == 'IN_PROGRESS') {
-                      title = title + `<br/><a href='${task.url}'>Pending Form</a>`;
+                      let finalUrl = task.url;
+                      if(!finalUrl.includes("http")) {
+                        finalUrl = window.location.protocol + "//" + window.location.hostname + ":30001" + task.url;
+                      } 
+                      title = title + `<br/><a href='${finalUrl}'>Pending Form</a>`;
                   }
                   html.push(`<span class="task-circle color-${task_status_color}" data-toggle="tooltip" title="${title}"></span>`);
                   html.push(`<span class="task-name">${task.taskName}</span>`);
