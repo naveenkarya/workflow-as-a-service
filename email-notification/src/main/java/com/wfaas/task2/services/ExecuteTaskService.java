@@ -87,7 +87,7 @@ public class ExecuteTaskService implements Runnable {
 	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes) {
 		System.out.println("Inside sendResponseToScheduler() :::::: ExecuteTaskService ");
 		
-		String URL = "http://scheduler-service:8080/completeTask"; // check for this URL
+		String URL = "http://scheduler-service:8080/task/complete"; // check for this URL
 		System.out.println("URL to send POST request to Scheduler service: "+URL);
 		
 		try {
