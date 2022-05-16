@@ -31,10 +31,16 @@ public class SchedulerService {
         workflow.setWorkflowStatus(Status.IN_PROGRESS);
         workflow.setWorkflowSpecId(Objects.requireNonNull(workflowSpec).getSpecId());
 
-        List<TaskInstance> taskInstanceList = workflowSpec.getTaskSpecList().stream().map(taskSpec ->
-                mapToPendingTaskInstance(taskSpec)
-        ).collect(Collectors.toList());
-        TaskInstance firstTask = taskInstanceList.stream().filter(taskSpec -> taskSpec.getOrder() == 1).findFirst().get();
+        List<TaskInstance> taskInstanceList = workflowSpec.getTaskSpecList()
+                .stream()
+                .map(this::mapToPendingTaskInstance)
+                .collect(Collectors.toList());
+
+        TaskInstance firstTask = taskInstanceList.stream()
+                .filter(taskSpec -> taskSpec.getOrder() == 1)
+                .findFirst()
+                .get();
+
         firstTask.setStatus(Status.IN_PROGRESS);
         workflow.setWorkflowStatus(Status.IN_PROGRESS);
         workflow.setWorkflowSpecId(createWorkflowRequest.getWorkflowSpecId());
@@ -52,18 +58,25 @@ public class SchedulerService {
     }
 
     private StartTaskRequest buildStartTaskRequest(Workflow workflow, TaskInstance firstTask) {
-        return StartTaskRequest.builder().taskId(firstTask.getTaskId()).workflowId(workflow.getWorkflowId()).attributes(workflow.getAttributes()).build();
+        return StartTaskRequest.builder()
+                .taskId(firstTask.getTaskId())
+                .workflowId(workflow.getWorkflowId())
+                .attributes(workflow.getAttributes())
+                .build();
     }
 
     // Calls the startTask API of the given task id
     private void startTask(String serviceName, StartTaskRequest startTaskRequest) { // How to send workflowId?
-        ResponseEntity<StartTaskResponse> startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask", startTaskRequest, StartTaskResponse.class);
+        ResponseEntity<StartTaskResponse> startTaskResponse;
+        startTaskResponse = restTemplate.postForEntity(serviceName + "/startTask",
+                                                            startTaskRequest, StartTaskResponse.class);
     }
 
     // Starts the next task if exists or completes the workflow
     public void completeTask(CompleteTaskDto completeTaskDto) {
         Workflow workflow = workflowRepository.findById(completeTaskDto.getWorkflowId());
-        workflow.getTaskInstanceList().stream().filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
+        workflow.getTaskInstanceList().stream()
+                .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
                 .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
 
         Optional<TaskInstance> nextTask = workflow.getTaskInstanceList().stream()

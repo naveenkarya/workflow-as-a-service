@@ -6,6 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.coen241.schedulerservice.model.Workflow;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,11 +14,8 @@ import java.util.List;
 @Repository
 public class WorkflowRepository {
 
-    private final DynamoDBMapper dynamoDBMapper;
-
-    public WorkflowRepository(DynamoDBMapper dynamoDBMapper) {
-        this.dynamoDBMapper = dynamoDBMapper;
-    }
+    @Autowired
+    private DynamoDBMapper dynamoDBMapper;
 
     // Save the workflow in the dB
     public Workflow save(Workflow workflow) {

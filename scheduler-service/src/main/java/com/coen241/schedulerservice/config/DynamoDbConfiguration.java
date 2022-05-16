@@ -29,7 +29,8 @@ public class DynamoDbConfiguration {
     @Bean
     public AmazonDynamoDB getDynamoDbClient() {
         return AmazonDynamoDBClientBuilder.standard()
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(dynamoDbEndpoint, ""))
+                .withEndpointConfiguration(new AwsClientBuilder
+                        .EndpointConfiguration(dynamoDbEndpoint, "us-east-1"))
                 .withCredentials(getAwsCredentials())
                 .build();
     }
