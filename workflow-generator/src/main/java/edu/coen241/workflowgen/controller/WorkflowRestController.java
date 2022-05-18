@@ -5,12 +5,6 @@ import edu.coen241.workflowgen.model.*;
 import edu.coen241.workflowgen.repository.TaskInfoRepository;
 import edu.coen241.workflowgen.repository.WorkflowSpecRepository;
 import edu.coen241.workflowgen.service.K8SDeploymentService;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServiceBuilder;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
-import io.fabric8.kubernetes.client.DefaultKubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,6 +50,14 @@ public class WorkflowRestController {
         return ResponseEntity.ok(workflowSpecRepository.findAll());
     }
 
+    @GetMapping("/getAllWorkflows")
+    public ResponseEntity<List<WorkflowSpecResponse>> getAllSpecResponse() {
+        List<WorkflowSpecResponse> list = workflowSpecRepository.findAll().stream()
+                .map(specInfo -> workflowResponseMapper.mapToWorkflowResponse(specInfo))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(list);
+    }
+
     @GetMapping("/{workflowSpecId}")
     public ResponseEntity<WorkflowSpecResponse> getWorkflowSpec(@PathVariable String workflowSpecId) {
         Optional<WorkflowSpecInfo> workflowSpecOp = workflowSpecRepository.findById(workflowSpecId);
@@ -81,15 +83,15 @@ public class WorkflowRestController {
             for (TaskInfo taskInfo : allTasks) {
                 k++;
                 Integer nodePort = k8SDeploymentService.deployService(DeploymentConfiguration.fromTaskInfo(taskInfo));
-                if(nodePort != null) {
+                if (nodePort != null) {
                     log.info("NodePort: " + nodePort);
                 }
             }
-            if(k > 0) {
+            if (k > 0) {
                 log.info("Workflow Spec not empty. Deploying scheduler and ui.");
                 k8SDeploymentService.deployService(SCHEDULER_CONFIG);
                 Integer nodePortUI = k8SDeploymentService.deployService(WORKFLOW_UI_CONFIG);
-                if(nodePortUI != null) {
+                if (nodePortUI != null) {
                     log.info("NodePortUI: " + nodePortUI);
                 }
             }
