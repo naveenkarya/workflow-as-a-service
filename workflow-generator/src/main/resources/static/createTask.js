@@ -32,13 +32,15 @@ $(function () {
         dockerImage = $("#dockerImage").val();
         cpuLimit = $("#cpuLimit").val();
         memoryLimit = $("#memoryLimit").val();
+        nodePort = $("#nodePort").val();
         url = `/task/add`;
         data = {
             taskName: taskName,
             serviceName: serviceName,
             dockerImage: dockerImage,
             cpuLimit: cpuLimit,
-            memoryLimit: memoryLimit
+            memoryLimit: memoryLimit,
+            nodePort: parseInt(nodePort)
         }
         $.ajax({
             type: "POST",

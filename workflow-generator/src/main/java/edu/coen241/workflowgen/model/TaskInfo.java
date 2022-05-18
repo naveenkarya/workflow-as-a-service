@@ -18,5 +18,5 @@ public class TaskInfo {
     private String dockerImage;
     private String cpuLimit;
     private String memoryLimit;
-
+    private Integer nodePort;
 }

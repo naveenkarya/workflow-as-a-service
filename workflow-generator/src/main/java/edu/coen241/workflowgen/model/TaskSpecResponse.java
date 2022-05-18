@@ -12,4 +12,5 @@ public class TaskSpecResponse {
     private String serviceName;
     private String taskName;
     private int order;
+    private Integer nodePort;
 }

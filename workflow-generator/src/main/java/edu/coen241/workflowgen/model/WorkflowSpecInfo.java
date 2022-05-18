@@ -15,5 +15,6 @@ public class WorkflowSpecInfo {
     @Id
     private String id;
     private String name;
+    private String deploymentStatus = "Not Deployed";
     private List<TaskOrder> taskOrderList;
 }
