@@ -2,6 +2,7 @@ package edu.coen241.workflowgen.controller;
 
 import edu.coen241.workflowgen.model.TaskInfo;
 import edu.coen241.workflowgen.model.TaskName;
+import edu.coen241.workflowgen.model.WorkflowSpecInfo;
 import edu.coen241.workflowgen.repository.TaskInfoRepository;
 import edu.coen241.workflowgen.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class TaskRestController {
     @GetMapping("/taskNames")
     public ResponseEntity<List<TaskName>> getTaskNames() {
         return ResponseEntity.ok(taskService.getTaskNames(taskInfoRepository.findAll()));
+    }
+
+    @GetMapping("/taskInfo")
+    public ResponseEntity<List<TaskInfo>> getAllTasks() {
+        return ResponseEntity.ok(taskInfoRepository.findAll());
     }
 
     @DeleteMapping("/task/{taskId}")

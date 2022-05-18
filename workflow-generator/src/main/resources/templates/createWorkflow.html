@@ -15,49 +15,74 @@
     <script src="/createWorkflow.js"></script>
     <link rel="stylesheet" href="/styles.css">
 </head>
+
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link" aria-current="page" href="/">Home</a>
+                        <a class="nav-link active" href="/createWorkflow">Create Workflow</a>
+                        <a class="nav-link" href="/createTask">Create Task</a>
+                        <a class="nav-link" href="/viewWorkflows">View Workflows</a>
+                        <a class="nav-link" href="/viewTasks">View Tasks</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-<div class="jumbotron text-center">
-    <h1 class="display-4">Workflow</h1>
-    <p class="lead">Manage your workflows</p>
-</div>
-<main class="container" style="width: 50%;">
-
-    <div id="createWorkflowSpec" class="card justify-content-center" style="">
-        <div class="form-floating mb-3">
-            <input type="text" class="form-control" id="workflowName" placeholder="Workflow Name">
-            <label for="workflowName">Name of the Workflow</label>
-        </div>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle selectedValue" type="button"
-                    data-taskId="" data-order="1" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                Select Task
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-
-            </ul>
-            <button type="button" class="close" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="action-buttons">
-            <button type="button" class="btn btn-light" id="addTaskToWorkflow">Add another
-                Task to this Workflow
-            </button>
-            <button type="button" class="btn btn-primary" id="createWorkflowButton">Create Workflow
-            </button>
-        </div>
-
-    </div>
-    <div class="list-group moreLinks">
-        <a href="/createWorkflow" class="list-group-item list-group-item-action link-primary">Create new Workflow Spec</a>
-        <a href="/createTask" class="list-group-item list-group-item-action link-primary">Create a new Task</a>
+    <div class="jumbotron text-center" style="padding: 25px">
+        <h1 class="display-4">Create Workflow</h1>
     </div>
 
-</main>
+    <main class="container" style="width: 50%; padding: 25px 0px 100px 0px;">
+        <div id="createWorkflowSpec" class="card justify-content-center" style="padding: 25px;">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="workflowName" placeholder="Workflow Name">
+                <label for="workflowName">Name of the Workflow</label>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle selectedValue" type="button"
+                        data-taskId="" data-order="1" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Select Task
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 
+                </ul>
+                <button type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-light" id="addTaskToWorkflow">Add another
+                    Task to this Workflow
+                </button>
+            </div>
+            <div class="action-buttons" style="padding-top: 35px;">
+                <button type="button" class="btn btn-primary" id="createWorkflowButton">Create Workflow</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-center text-white">
+        <div class="container p-4">
+            <section class="mb-4">
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
+                    distinctio earum repellat quaerat voluptatibus placeat nam,
+                    commodi optio pariatur est quia magnam eum harum corrupti dicta,
+                    aliquam sequi voluptate quas.
+                </p>
+            </section>
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+            © 2022 Copyright:
+            <h6 class="text-white">WORKFLOW AS A SERVICE TEAM</h6>
+        </div>
+    </footer>
 
 </body>
-
 </html>

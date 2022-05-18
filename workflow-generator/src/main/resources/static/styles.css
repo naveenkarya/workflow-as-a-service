@@ -25,3 +25,7 @@
 label {
     color: gray;
 }
+
+.bold{
+    font-weight: bold;
+}
