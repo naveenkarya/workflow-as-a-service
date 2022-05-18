@@ -1,6 +1,5 @@
 package edu.coen241.workflowgen.model;
 
-import edu.coen241.workflowgen.model.TaskSpecResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +14,6 @@ import java.util.List;
 public class WorkflowSpecResponse {
     private String specId;
     private String name;
+    private String deploymentStatus;
     private List<TaskSpecResponse> taskSpecList;
 }

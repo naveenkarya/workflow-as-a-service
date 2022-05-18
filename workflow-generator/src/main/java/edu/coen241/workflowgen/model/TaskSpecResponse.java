@@ -13,4 +13,5 @@ public class TaskSpecResponse {
     private String taskName;
     private int order;
     private Integer nodePort;
+    private String deploymentStatus;
 }

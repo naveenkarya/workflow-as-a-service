@@ -1,6 +1,5 @@
 package edu.coen241.workflowgen.model;
 
-import edu.coen241.workflowgen.model.TaskOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ public class WorkflowSpecInfo {
     @Id
     private String id;
     private String name;
-    private String deploymentStatus = "Not Deployed";
+    private DeploymentStatus deploymentStatus = DeploymentStatus.NOT_STARTED;
     private List<TaskOrder> taskOrderList;
 
 }
