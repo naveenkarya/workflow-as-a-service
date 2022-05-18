@@ -29,7 +29,7 @@
             </div>
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="serviceName" placeholder="Service Name">
-                <label for="serviceName">Service Name</label>
+                <label for="serviceName">Service Name. Lower case only. Can contain '-' or '.'</label>
             </div>
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="dockerImage" placeholder="Docker Image">
@@ -42,6 +42,10 @@
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="memoryLimit" placeholder="Memory Limit">
                 <label for="memoryLimit">Memory Limit (e.g. 256Mi)</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="nodePort" placeholder="Node Port">
+                <label for="nodePort">Port number in range 30001 - 32767. Use only if service needs to be exposed outside cluster</label>
             </div>
             <div>
                 <button id= "createTaskSubmit" type="submit" class="btn btn-primary mb-3">Create</button>

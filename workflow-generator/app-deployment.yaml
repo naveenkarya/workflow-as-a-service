@@ -25,6 +25,7 @@ spec:
       labels:
         app: workflow-gen-service
     spec:
+      serviceAccountName: edit-access
       containers:
         - name: workflow-gen-service
           image: nevin160/workflow-generator
@@ -35,10 +36,20 @@ spec:
             - name: MONGO_DB
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-spec-db-config
-                  key: database
+                  name: workflow-gen-config
+                  key: db-name
             - name: MONGO_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-spec-db-config
-                  key: host
+                  name: workflow-gen-config
+                  key: db-host
+            - name: workflow-ui-docker-image
+              valueFrom:
+                configMapKeyRef:
+                  name: workflow-gen-config
+                  key: workflow-ui-docker-image
+            - name: scheduler-service-docker-image
+              valueFrom:
+                configMapKeyRef:
+                  name: workflow-gen-config
+                  key: scheduler-service-docker-image

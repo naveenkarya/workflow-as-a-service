@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-gen-config
+data:
+  db-host: workflow-spec-db-service
+  db-name: workflow-db
+  workflow-ui-docker-image: nevin160/workflow-ui
+  scheduler-service-docker-image: nevin160/scheduler-service

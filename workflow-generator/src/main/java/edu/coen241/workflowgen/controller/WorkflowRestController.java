@@ -1,17 +1,17 @@
 package edu.coen241.workflowgen.controller;
 
 import edu.coen241.workflowgen.mapper.WorkflowResponseMapper;
-import edu.coen241.workflowgen.model.WorkflowSpecInfo;
-import edu.coen241.workflowgen.model.WorkflowSpecResponse;
+import edu.coen241.workflowgen.model.*;
 import edu.coen241.workflowgen.repository.TaskInfoRepository;
 import edu.coen241.workflowgen.repository.WorkflowSpecRepository;
-import edu.coen241.workflowgen.service.TaskService;
+import edu.coen241.workflowgen.service.K8SDeploymentService;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,20 +21,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
+import static edu.coen241.workflowgen.model.DeploymentConfiguration.SCHEDULER_CONFIG;
+import static edu.coen241.workflowgen.model.DeploymentConfiguration.WORKFLOW_UI_CONFIG;
+
+@Slf4j
 @RestController
+@RequestMapping("/workflowSpec")
 public class WorkflowRestController {
-    public static final String DEFAULT_NAMESPACE = "default";
+
     @Autowired
     TaskInfoRepository taskInfoRepository;
     @Autowired
     WorkflowSpecRepository workflowSpecRepository;
     @Autowired
-    TaskService taskService;
+    K8SDeploymentService k8SDeploymentService;
     @Autowired
     WorkflowResponseMapper workflowResponseMapper;
+    ExecutorService executor = Executors.newFixedThreadPool(4);
 
-    @PostMapping("/workflowSpec/create")
+    @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createWorkflowSpec(@RequestBody WorkflowSpecInfo workflowSpecInfo) {
         workflowSpecRepository.save(workflowSpecInfo);
         Map<String, String> result = new HashMap<>();
@@ -42,12 +51,12 @@ public class WorkflowRestController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/workflowSpec")
+    @GetMapping
     public ResponseEntity<List<WorkflowSpecInfo>> getAllWorkflowSpec() {
         return ResponseEntity.ok(workflowSpecRepository.findAll());
     }
 
-    @GetMapping("/workflowSpec/{workflowSpecId}")
+    @GetMapping("/{workflowSpecId}")
     public ResponseEntity<WorkflowSpecResponse> getWorkflowSpec(@PathVariable String workflowSpecId) {
         Optional<WorkflowSpecInfo> workflowSpecOp = workflowSpecRepository.findById(workflowSpecId);
         if (workflowSpecOp.isPresent()) {
@@ -56,73 +65,37 @@ public class WorkflowRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/workflowSpec")
+    @DeleteMapping
     public ResponseEntity<Void> deleteAllWorkflowSpecs() {
         workflowSpecRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/workflowSpec/{workflowSpecId}/deploy")
+    @GetMapping("/{workflowSpecId}/deploy")
     public ResponseEntity<Void> deployWorkflowSpec(@PathVariable String workflowSpecId) {
-        //Optional<WorkflowSpecInfo> workflowSpecOp = workflowSpecRepository.findById(workflowSpecId);
-        try (KubernetesClient client = new DefaultKubernetesClient()) {
-            createDeployment(client);
-            createService(client);
+        Optional<WorkflowSpecInfo> workflowSpecOp = workflowSpecRepository.findById(workflowSpecId);
+        if (workflowSpecOp.isPresent()) {
+            WorkflowSpecInfo workflowSpec = workflowSpecOp.get();
+            Iterable<TaskInfo> allTasks = taskInfoRepository.findAllById(workflowSpec.getTaskOrderList().stream().map(TaskOrder::getTaskId).collect(Collectors.toList()));
+            int k = 0;
+            for (TaskInfo taskInfo : allTasks) {
+                k++;
+                Integer nodePort = k8SDeploymentService.deployService(DeploymentConfiguration.fromTaskInfo(taskInfo));
+                if(nodePort != null) {
+                    log.info("NodePort: " + nodePort);
+                }
+            }
+            if(k > 0) {
+                log.info("Workflow Spec not empty. Deploying scheduler and ui.");
+                k8SDeploymentService.deployService(SCHEDULER_CONFIG);
+                Integer nodePortUI = k8SDeploymentService.deployService(WORKFLOW_UI_CONFIG);
+                if(nodePortUI != null) {
+                    log.info("NodePortUI: " + nodePortUI);
+                }
+            }
+            return ResponseEntity.ok().build();
         }
-        catch (Exception e) {
-            // TODO: handle failed
-        }
-        return ResponseEntity.ok().build();
-    }
-
-    private void createDeployment(KubernetesClient client) {
-        Deployment deployment = new DeploymentBuilder()
-                .withNewMetadata()
-                    .withName("workflow-ui-deployment")
-                    .addToLabels("app", "workflow-ui")
-                .endMetadata()
-                .withNewSpec()
-                    .withReplicas(1)
-                    .withNewSelector()
-                        .addToMatchLabels("app", "workflow-ui")
-                    .endSelector()
-                    .withNewTemplate()
-                        .withNewMetadata()
-                            .addToLabels("app", "workflow-ui")
-                        .endMetadata()
-                        .withNewSpec()
-                            .addNewContainer()
-                                .withName("workflow-ui")
-                                .withImage("nevin160/workflow-ui")
-                                .addNewPort()
-                                    .withContainerPort(8080)
-                                .endPort()
-                            .endContainer()
-                        .endSpec()
-                    .endTemplate()
-                .endSpec()
-                .build();
-        client.apps().deployments().inNamespace("default").createOrReplace(deployment);
-    }
-
-    private void createService(KubernetesClient client) {
-        Service service = new ServiceBuilder()
-                .withNewMetadata()
-                    .withName("workflow-ui-service")
-                    .addToLabels("app", "workflow-ui-service")
-                .endMetadata()
-                .withNewSpec()
-                    .withType("NodePort")
-                    .addNewPort()
-                        .withPort(8080)
-                        .withNodePort(30000)
-                    .endPort()
-                    .addToSelector("app", "workflow-ui")
-                .endSpec()
-                .build();
-
-        service = client.services().inNamespace(DEFAULT_NAMESPACE).create(service);
-
+        return ResponseEntity.notFound().build();
     }
 
 }

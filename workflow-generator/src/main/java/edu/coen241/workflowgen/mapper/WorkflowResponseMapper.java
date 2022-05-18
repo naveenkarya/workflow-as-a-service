@@ -20,8 +20,12 @@ public class WorkflowResponseMapper {
         List<TaskSpecResponse> taskSpecList = new ArrayList<>();
         for(TaskOrder taskOrder : workflowSpecInfo.getTaskOrderList()) {
             Optional<TaskInfo> taskFromDBOp = taskInfoRepository.findById(taskOrder.getTaskId());
-            taskFromDBOp.ifPresent(taskFromDB -> taskSpecList.add(TaskSpecResponse.builder().taskId(taskOrder.getTaskId()).order(taskOrder.getOrder())
-                    .taskName(taskFromDB.getTaskName()).serviceName(taskFromDB.getServiceName()).build()));
+            taskFromDBOp.ifPresent(taskFromDB -> taskSpecList.add(TaskSpecResponse.builder()
+                    .taskId(taskOrder.getTaskId())
+                    .order(taskOrder.getOrder())
+                    .nodePort(taskFromDB.getNodePort())
+                    .taskName(taskFromDB.getTaskName())
+                    .serviceName(taskFromDB.getServiceName()).build()));
         }
         specResponse.setTaskSpecList(taskSpecList);
         return specResponse;
