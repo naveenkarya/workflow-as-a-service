@@ -3,7 +3,7 @@ $(function () {
     var nextValue = 2;
 
     function retrieveTasks() {
-        url = '/taskNames';
+        url = '/task/names';
         $.ajax({
             url: url,
             type: 'GET',
