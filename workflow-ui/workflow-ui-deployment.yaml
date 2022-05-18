@@ -17,6 +17,7 @@ spec:
       containers:
       - name: workflow-ui
         image: nevin160/workflow-ui
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
       imagePullSecrets:
