@@ -48,7 +48,7 @@ public class WorkflowRestController {
     }
 
     @GetMapping("/getAllWorkflows")
-    public ResponseEntity<List<WorkflowSpecResponse>> getAllSpecResponse() {
+    public ResponseEntity<List<WorkflowSpecResponse>> getAllWorkflowSpecResponse() {
         List<WorkflowSpecResponse> list = workflowSpecRepository.findAll().stream()
                 .map(specInfo -> workflowResponseMapper.mapToWorkflowResponse(specInfo))
                 .collect(Collectors.toList());

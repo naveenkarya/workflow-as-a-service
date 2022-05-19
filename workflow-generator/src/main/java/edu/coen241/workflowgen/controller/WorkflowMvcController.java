@@ -45,7 +45,7 @@ public class WorkflowMvcController {
         mv.setViewName("viewWorkflows");
 
         // Get list of all the workflows
-        List<WorkflowSpecResponse> workflowSpecResponseList = workflowRestController.getAllSpecResponse().getBody();
+        List<WorkflowSpecResponse> workflowSpecResponseList = workflowRestController.getAllWorkflowSpecResponse().getBody();
         mv.addObject("workflowSpecResponse", workflowSpecResponseList);
 
         return mv;
