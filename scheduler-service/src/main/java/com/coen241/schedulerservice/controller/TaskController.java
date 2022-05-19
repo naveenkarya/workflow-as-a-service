@@ -1,6 +1,7 @@
 package com.coen241.schedulerservice.controller;
 
 import com.coen241.schedulerservice.dtos.CompleteTaskDto;
+import com.coen241.schedulerservice.dtos.RetryTaskRequest;
 import com.coen241.schedulerservice.services.SchedulerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,12 @@ public class TaskController {
     @PostMapping("/complete")
     public ResponseEntity<Void> completeTask(@RequestBody CompleteTaskDto completeTaskDto) {
         schedulerService.completeTask(completeTaskDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/retry")
+    public ResponseEntity<Void> retryTask(@RequestBody RetryTaskRequest retryTaskRequest) {
+        schedulerService.retryTask(retryTaskRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

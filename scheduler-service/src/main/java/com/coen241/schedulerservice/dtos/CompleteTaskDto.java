@@ -1,5 +1,6 @@
 package com.coen241.schedulerservice.dtos;
 
+import com.coen241.schedulerservice.common.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ import java.util.Map;
 public class CompleteTaskDto {
     String workflowId;
     String taskId;
+    Status status;
     Map<String, String> attributes;
 }

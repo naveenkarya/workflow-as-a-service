@@ -94,24 +94,32 @@ public class SchedulerService {
     // Starts the next task if exists or completes the workflow
     public void completeTask(CompleteTaskDto completeTaskDto) {
         Workflow workflow = workflowRepository.findById(completeTaskDto.getWorkflowId());
-        workflow.getTaskInstanceList().stream()
-                .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
-                .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
-        // Copy all attributes from the response
-        for (Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
-            workflow.getAttributes().put(attribute.getKey(), attribute.getValue());
-        }
-        Optional<TaskInstance> nextPendingTask = workflow.getTaskInstanceList().stream()
-                .sorted(Comparator.comparingInt(TaskInstance::getOrder))
-                .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst();
 
-        if (nextPendingTask.isPresent()) {
-            TaskInstance next = nextPendingTask.get();
-            next.setStatus(Status.IN_PROGRESS);
-            startTask(next.getServiceName(), buildStartTaskRequest(workflow, next), next.getNodePort());
+        // Case when the current task has completed successfully
+        if (completeTaskDto.getStatus() != Status.FAILED) {
+            workflow.getTaskInstanceList().stream()
+                    .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
+                    .forEach(taskInstance -> taskInstance.setStatus(Status.COMPLETED));
+            // Copy all attributes from the response
+            for (Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
+                workflow.getAttributes().put(attribute.getKey(), attribute.getValue());
+            }
+            Optional<TaskInstance> nextPendingTask = workflow.getTaskInstanceList().stream()
+                    .sorted(Comparator.comparingInt(TaskInstance::getOrder))
+                    .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst();
+            // Start the next pending task if exists
+            if (nextPendingTask.isPresent()) {
+                TaskInstance next = nextPendingTask.get();
+                next.setStatus(Status.IN_PROGRESS);
+                startTask(next.getServiceName(), buildStartTaskRequest(workflow, next), next.getNodePort());
+            } else { workflow.setWorkflowStatus(Status.COMPLETED); }
+        // Case when the current task has failed execution
         } else {
-            workflow.setWorkflowStatus(Status.COMPLETED);
+            workflow.getTaskInstanceList().stream()
+                    .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
+                    .forEach(taskInstance -> taskInstance.setStatus(Status.FAILED));
         }
+
         workflow.setUpdatedAt(Instant.now().toString());
         workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
@@ -126,21 +134,20 @@ public class SchedulerService {
         workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 
-    // Method to retry workflow from the state it failed
-    public String retryWorkflow(RetryWorkflowRequest retryWorkflowRequest) {
-        Workflow workflow = workflowRepository.findById(retryWorkflowRequest.getWorkflowId());
+    // Retry the task if it has failed
+    public void retryTask(RetryTaskRequest retryTaskRequest) {
+        Workflow workflow = workflowRepository.findById(retryTaskRequest.getWorkflowId());
 
-        TaskInstance nextPendingTask = workflow.getTaskInstanceList().stream()
-                .sorted(Comparator.comparingInt(TaskInstance::getOrder))
-                .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst().get();
+        TaskInstance failedTask = workflow.getTaskInstanceList()
+                .stream()
+                .filter(taskInstance -> taskInstance.getTaskId().equals(retryTaskRequest.getTaskId()))
+                .findFirst().get();
 
-        nextPendingTask.setStatus(Status.IN_PROGRESS);
-        startTask(nextPendingTask.getServiceName(),
-                buildStartTaskRequest(workflow, nextPendingTask), nextPendingTask.getNodePort());
+        failedTask.setStatus(Status.IN_PROGRESS);
+        startTask(failedTask.getServiceName(),
+                buildStartTaskRequest(workflow, failedTask), failedTask.getNodePort());
 
         workflow.setUpdatedAt(Instant.now().toString());
         workflowRepository.update(workflow.getWorkflowId(), workflow);
-
-        return workflow.getWorkflowId();
     }
 }

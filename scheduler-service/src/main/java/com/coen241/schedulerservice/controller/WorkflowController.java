@@ -1,6 +1,5 @@
 package com.coen241.schedulerservice.controller;
 
-import com.coen241.schedulerservice.dtos.RetryWorkflowRequest;
 import com.coen241.schedulerservice.dtos.WorkflowResponse;
 import com.coen241.schedulerservice.dtos.CreateWorkflowRequest;
 import com.coen241.schedulerservice.model.Workflow;
@@ -38,14 +37,6 @@ public class WorkflowController {
     @PostMapping("/start")
     public ResponseEntity<WorkflowResponse> startWorkflow(@RequestBody CreateWorkflowRequest createWorkflowRequest) {
         String workflowId = schedulerService.startWorkflow(createWorkflowRequest);
-        WorkflowResponse workflowResponse = new WorkflowResponse();
-        workflowResponse.setWorkflowId(workflowId);
-        return new ResponseEntity<>(workflowResponse, HttpStatus.OK);
-    }
-
-    @PostMapping("/retry")
-    public ResponseEntity<WorkflowResponse> retryWorkflow(@RequestBody RetryWorkflowRequest retryWorkflowRequest) {
-        String workflowId = schedulerService.retryWorkflow(retryWorkflowRequest);
         WorkflowResponse workflowResponse = new WorkflowResponse();
         workflowResponse.setWorkflowId(workflowId);
         return new ResponseEntity<>(workflowResponse, HttpStatus.OK);
