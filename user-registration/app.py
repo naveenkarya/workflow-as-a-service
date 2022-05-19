@@ -41,6 +41,7 @@ def startTask():
 # make json and send to scheduler
 def completeTask(email, workflowid, taskid):
 	data = {
+		'status': 'COMPLETED',
 		'workflowId': workflowid,
 		'taskId': taskid,
 		'attributes': {
