@@ -30,12 +30,10 @@ $(function () {
             type: "POST",
             url: "/retryTask",
             data: JSON.stringify(data),
-            dataType: "json",
             contentType: 'application/json',
             encode: true,
-            success: function (response, status) {
-                console.log("status is " + status);
-                generateWF();
+            success: function () {
+                generateWF(); 
             },
             error: function (x, e) {
                 console.log(e);
@@ -95,5 +93,5 @@ $(function () {
     }
     
     generateWF();
-    //setInterval(generateWF, 8000);
+    setInterval(generateWF, 8000);
 });

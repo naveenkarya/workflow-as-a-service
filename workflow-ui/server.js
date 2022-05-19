@@ -138,7 +138,6 @@ app.get('/workflowStatus/:workflowId', (req, res) => {
 
 app.post('/retryTask', (req, res) => {
     console.log(req.body);
-    res.contentType("application/json");
     request.post({
         url: `${schedulerServiceUrl}/task/retry`,
         headers: { "Content-Type": "application/json" },
@@ -155,7 +154,7 @@ app.post('/retryTask', (req, res) => {
             res.send(JSON.stringify(errorJson));
         }
         else if (response.statusCode === 200) {
-            res.send(body);
+            res.send("Success");
         }
         else {
             const errorJson = {
