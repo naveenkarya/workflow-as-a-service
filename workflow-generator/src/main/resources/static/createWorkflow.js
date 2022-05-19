@@ -93,5 +93,31 @@ $(function () {
           });
           nextValue -= 1;
        });
-
 });
+
+function deployWorkflow(obj){
+    var workflowAccItem = $(obj).parents('div.accordion-item');
+    var workflowSpecId = $(workflowAccItem).find('span#workflowSpecId').text();
+
+    data = {
+        'workflowSpecId': workflowSpecId
+    };
+
+    if(workflowSpecId != null && workflowSpecId.length > 0){
+        $.ajax({
+           type: "POST",
+           url: '/'+workflowSpecId+'/deploy',
+           data: JSON.stringify(data),
+           dataType: "json",
+           contentType : 'application/json',
+           encode: true,
+           success: function (response) {
+               alert('Workflow Specification is deployed');
+               $('.navbar-nav').find('a.active').trigger('click');
+           },
+           error: function (x, e) {
+               console.log('some error occurred inside deployWorkflow() :::: createWorkflow.js, error = '+e);
+           }
+        });
+    }
+}

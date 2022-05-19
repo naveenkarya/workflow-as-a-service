@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
 
+    <script src="/createWorkflow.js"></script>
     <link rel="stylesheet" href="../styles.css">
 </head>
 
@@ -36,36 +37,51 @@
     </div>
 
     <main class="container" style="padding: 25px 0px 100px 0px;">
-        <div class="workflowAccordion justify-content-center" th:each="workflowSpec: ${workflowSpecs}">
+        <div class="workflowAccordion justify-content-center" th:each="workflowSpec: ${workflowSpecResponse}">
             <h3 th:text="${workflowSpec.name}"></h3>
             <div class="accordion-item">
                 <h4 th:text="${workflowSpec.name}"></h4>
 
                 <div class="accordion-body">
+                    <div>
+                        <h6><span>WorkflowSpec ID:</span> <span id="workflowSpecId" th:text="${workflowSpec.specId}"></span></h6>
+                    </div>
+                    <div>
+                        <h6><span>WorkflowSpec Name:</span> <span th:text="${workflowSpec.name}"></span></h6>
+                    </div>
                     <div style="padding-bottom: 10px;">
-                        <h5><span>Status:</span> <span></span></h5>
-                    </div>
-                    <div>
-                        <h6><span>WorkflowSpec ID:</span> <span th:text="${workflowSpec.id}"></span></h6>
-                    </div>
-                    <div>
-                        <h6><span>Workflow Name:</span> <span th:text="${workflowSpec.name}"></span></h6>
+                        <h6><span>Deployment Status:</span> <span th:text="${workflowSpec.deploymentStatus}"></span></h6>
                     </div>
 
                     <div style="padding: 10px 0px 0px 25px">
-                        <div th:each="task: ${workflowSpec.taskOrderList}">
-                            <div style="padding-bottom: 5px;">
-                                <h6><span>Task #</span><span th:text="${task.order}"></span><span>:</span></h6>
+                        <div th:each="task: ${workflowSpec.taskSpecList}">
+                            <div style="padding-bottom: 15px;">
+                                <h6 style="text-decoration: underline;">
+                                    <span>Task #</span><span th:text="${task.order}"></span><span>:</span>
+                                </h6>
 
                                 <div>
                                     <h6><span>Task ID: </span><span th:text="${task.taskId}"></span></h6>
                                 </div>
                                 <div>
+                                    <h6><span>Task Name: </span><span th:text="${task.taskName}"></span></h6>
+                                </div>
+                                <div>
                                     <h6><span>Task Order: </span><span th:text="${task.order}"></span></h6>
+                                </div>
+                                <div>
+                                    <h6><span>Service Name: </span><span th:text="${task.serviceName}"></span></h6>
+                                </div>
+                                <div>
+                                    <h6><span>NodePort: </span><span th:text="${task.nodePort}"></span></h6>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="action-buttons" style="padding-top: 15px;">
+                    <button type="button" class="btn btn-success" onclick="deployWorkflow($(this))">Deploy Workflow</button>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ package edu.coen241.workflowgen.controller;
 
 import edu.coen241.workflowgen.model.TaskInfo;
 import edu.coen241.workflowgen.model.WorkflowSpecInfo;
+import edu.coen241.workflowgen.model.WorkflowSpecResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,8 @@ public class WorkflowMvcController {
         mv.setViewName("viewWorkflows");
 
         // Get list of all the workflows
-        List<WorkflowSpecInfo> workflowSpecInfoList = workflowRestController.getAllWorkflowSpec().getBody();
-
-        mv.addObject("msg", "hello");
-        mv.addObject("workflowSpecs", workflowSpecInfoList);
+        List<WorkflowSpecResponse> workflowSpecResponseList = workflowRestController.getAllSpecResponse().getBody();
+        mv.addObject("workflowSpecResponse", workflowSpecResponseList);
 
         return mv;
     }
@@ -60,8 +59,6 @@ public class WorkflowMvcController {
 
         // Get list of all the tasks
         List<TaskInfo> taskInfoList = taskRestController.getAllTasks().getBody();
-
-        mv.addObject("msg", "hello");
         mv.addObject("taskInfo", taskInfoList);
 
         return mv;
