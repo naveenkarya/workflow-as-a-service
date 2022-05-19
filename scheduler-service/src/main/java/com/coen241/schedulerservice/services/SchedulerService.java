@@ -1,7 +1,7 @@
 package com.coen241.schedulerservice.services;
 
 import com.coen241.schedulerservice.common.Status;
-import com.coen241.schedulerservice.dtos.CompleteTaskDto;
+import com.coen241.schedulerservice.dtos.*;
 import com.coen241.schedulerservice.model.*;
 import com.coen241.schedulerservice.repository.WorkflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class SchedulerService {
                 .build();
     }
 
-    // Calls the startTask API of the given task id
+    // Calls the startTask API of the given task
     private void startTask(String serviceName, StartTaskRequest startTaskRequest, Integer nodePort) {
         ResponseEntity<StartTaskResponse> startTaskResponse;
         HttpHeaders headers = new HttpHeaders();
@@ -101,12 +101,12 @@ public class SchedulerService {
         for (Map.Entry<String, String> attribute : completeTaskDto.getAttributes().entrySet()) {
             workflow.getAttributes().put(attribute.getKey(), attribute.getValue());
         }
-        Optional<TaskInstance> nextTask = workflow.getTaskInstanceList().stream()
+        Optional<TaskInstance> nextPendingTask = workflow.getTaskInstanceList().stream()
                 .sorted(Comparator.comparingInt(TaskInstance::getOrder))
                 .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst();
 
-        if (nextTask.isPresent()) {
-            TaskInstance next = nextTask.get();
+        if (nextPendingTask.isPresent()) {
+            TaskInstance next = nextPendingTask.get();
             next.setStatus(Status.IN_PROGRESS);
             startTask(next.getServiceName(), buildStartTaskRequest(workflow, next), next.getNodePort());
         } else {
@@ -124,5 +124,23 @@ public class SchedulerService {
                 .findFirst().get().setUrl(url);
         workflow.setUpdatedAt(Instant.now().toString());
         workflowRepository.update(workflow.getWorkflowId(), workflow);
+    }
+
+    // Method to retry workflow from the state it failed
+    public String retryWorkflow(RetryWorkflowRequest retryWorkflowRequest) {
+        Workflow workflow = workflowRepository.findById(retryWorkflowRequest.getWorkflowId());
+
+        TaskInstance nextPendingTask = workflow.getTaskInstanceList().stream()
+                .sorted(Comparator.comparingInt(TaskInstance::getOrder))
+                .filter(taskInstance -> taskInstance.getStatus().equals(Status.PENDING)).findFirst().get();
+
+        nextPendingTask.setStatus(Status.IN_PROGRESS);
+        startTask(nextPendingTask.getServiceName(),
+                buildStartTaskRequest(workflow, nextPendingTask), nextPendingTask.getNodePort());
+
+        workflow.setUpdatedAt(Instant.now().toString());
+        workflowRepository.update(workflow.getWorkflowId(), workflow);
+
+        return workflow.getWorkflowId();
     }
 }

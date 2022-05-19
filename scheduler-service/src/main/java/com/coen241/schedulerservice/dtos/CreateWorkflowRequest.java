@@ -1,4 +1,4 @@
-package com.coen241.schedulerservice.model;
+package com.coen241.schedulerservice.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
