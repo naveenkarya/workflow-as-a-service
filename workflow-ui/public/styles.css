@@ -36,6 +36,9 @@ span.color-in-progress {
 span.color-complete {
   background-color: #b1cf8e;
 }
+span.color-failed {
+  background-color: #e45d3b;
+}
 hr {
   display: block;
   border: 0;
@@ -55,7 +58,9 @@ hr.color-in-progress {
 hr.color-complete {
   border-color: #b1cf8e;
 }
-
+hr.color-failed {
+  border-color: #e45d3b;
+}
 .task {
   display: flex;
   flex-direction: column;
@@ -97,4 +102,9 @@ margin-top: 30px;
 }
 .moreLinks {
   margin-top: 50px;
+}
+.retry {
+  cursor: pointer;
+  font-size: medium;
+  background-color: green;
 }

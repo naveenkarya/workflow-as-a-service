@@ -144,10 +144,10 @@ public class SchedulerService {
                 .findFirst().get();
 
         failedTask.setStatus(Status.IN_PROGRESS);
+        workflow.setUpdatedAt(Instant.now().toString());
+        workflowRepository.update(workflow.getWorkflowId(), workflow);
         startTask(failedTask.getServiceName(),
                 buildStartTaskRequest(workflow, failedTask), failedTask.getNodePort());
 
-        workflow.setUpdatedAt(Instant.now().toString());
-        workflowRepository.update(workflow.getWorkflowId(), workflow);
     }
 }

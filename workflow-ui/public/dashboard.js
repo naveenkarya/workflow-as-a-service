@@ -1,8 +1,4 @@
 $(function () {
-    const statusColorMap = new Map();
-    statusColorMap.set('COMPLETED', 'complete');
-    statusColorMap.set('IN_PROGRESS', 'in-progress');
-    statusColorMap.set('PENDING', 'not-started');
     const statusCodeMap = new Map();
     statusCodeMap.set('COMPLETED', 'Completed');
     statusCodeMap.set('IN_PROGRESS', 'In Progress');
