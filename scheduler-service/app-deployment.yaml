@@ -12,7 +12,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scheduler-service
+  name: scheduler-deployment
 spec:
   selector:
     matchLabels:

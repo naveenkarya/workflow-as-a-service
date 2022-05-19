@@ -4,15 +4,15 @@ public enum DeploymentStatus {
     NOT_STARTED("Not Started"),
     IN_PROGRESS("In Progress"),
     DEPLOYED("Deployed"),
-    FAILED("Failed");
+    FAILED("Failed"),
+    ERROR_CANNOT_GET ("Cannot Retrieve Status");
 
     private String value;
     DeploymentStatus(String value) {
         this.value = value;
     }
 
-    @Override
-    public String toString() {
+    public String getValue() {
         return value;
     }
 }

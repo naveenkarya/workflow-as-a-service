@@ -35,9 +35,12 @@ $(function () {
                   let title = `Task: ${task.taskName}<br/>Status: ${statusCodeMap.get(task.status)}`;
                   if(task.url != null && task.status == 'IN_PROGRESS') {
                       let finalUrl = task.url;
-                      if(!finalUrl.includes("http")) {
-                        finalUrl = window.location.protocol + "//" + window.location.hostname + ":30001" + task.url;
+                      if(finalUrl.includes("{{HOST}}")) {
+                        finalUrl = task.url.replace("{{HOST}}", window.location.hostname);
                       } 
+                      else if(!finalUrl.includes("http")) {
+                        finalUrl = window.location.protocol + "//" + window.location.hostname + ":30001" + task.url;
+                      }
                       title = title + `<br/><a target='_blank' href='${finalUrl}'>Pending Form</a>`;
                   }
                   html.push(`<span class="task-circle color-${task_status_color}" data-toggle="tooltip" title="${title}"></span>`);

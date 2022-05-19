@@ -30,6 +30,12 @@ public class TaskRestController {
 
     @PostMapping("/add")
     public ResponseEntity<Map<String, String>> addTask(@RequestBody TaskInfo taskInfo) {
+        if(!taskInfo.isCpuLimitValid()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "CPU limit invalid"));
+        }
+        if(!taskInfo.isMemoryLimitValid()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Memory limit invalid"));
+        }
         taskInfoRepository.save(taskInfo);
         Map<String, String> result = new HashMap<>();
         result.put("taskId", taskInfo.getId());

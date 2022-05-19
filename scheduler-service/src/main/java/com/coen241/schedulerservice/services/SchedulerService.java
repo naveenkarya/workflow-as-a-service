@@ -51,12 +51,13 @@ public class SchedulerService {
         workflow.setUpdatedAt(workflow.getCreatedAt());
         Workflow createdWorkflow = workflowRepository.save(workflow);
 
-        startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask));
+        startTask(firstTask.getServiceName(), buildStartTaskRequest(createdWorkflow, firstTask), firstTask.getNodePort());
         return createdWorkflow.getWorkflowId();
     }
 
     private TaskInstance mapToPendingTaskInstance(TaskSpec taskSpec) {
         return TaskInstance.builder().taskId(taskSpec.getTaskId()).serviceName(taskSpec.getServiceName())
+                .nodePort(taskSpec.getNodePort())
                 .order(taskSpec.getOrder()).taskName(taskSpec.getTaskName()).status(Status.PENDING).build();
     }
 
@@ -69,7 +70,7 @@ public class SchedulerService {
     }
 
     // Calls the startTask API of the given task id
-    private void startTask(String serviceName, StartTaskRequest startTaskRequest) {
+    private void startTask(String serviceName, StartTaskRequest startTaskRequest, Integer nodePort) {
         ResponseEntity<StartTaskResponse> startTaskResponse;
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -79,6 +80,9 @@ public class SchedulerService {
                 entity, StartTaskResponse.class);
         String url = startTaskResponse.getBody() != null ? startTaskResponse.getBody().getUrl() : null;
         if (url != null) {
+            if(nodePort != null) {
+                url = "http://{{HOST}}:" + nodePort + url;
+            }
             persistFormUrl(startTaskRequest, url);
         }
     }
@@ -104,7 +108,7 @@ public class SchedulerService {
         if (nextTask.isPresent()) {
             TaskInstance next = nextTask.get();
             next.setStatus(Status.IN_PROGRESS);
-            startTask(next.getServiceName(), buildStartTaskRequest(workflow, next));
+            startTask(next.getServiceName(), buildStartTaskRequest(workflow, next), next.getNodePort());
         } else {
             workflow.setWorkflowStatus(Status.COMPLETED);
         }

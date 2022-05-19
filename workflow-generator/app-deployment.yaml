@@ -2,9 +2,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: workflow-gen-service
+  labels:
+    app: workflow-gen-service
 spec:
   selector:
-    app: workflow-gen-service
+    app: workflow-gen
   ports:
     - protocol: TCP
       port: 8080
@@ -14,20 +16,22 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workflow-gen-service
+  name: workflow-gen-deployment
+  labels:
+    app: workflow-gen-deployment
 spec:
   selector:
     matchLabels:
-      app: workflow-gen-service
+      app: workflow-gen
   replicas: 1
   template:
     metadata:
       labels:
-        app: workflow-gen-service
+        app: workflow-gen
     spec:
       serviceAccountName: edit-access
       containers:
-        - name: workflow-gen-service
+        - name: workflow-gen
           image: nevin160/workflow-generator
           imagePullPolicy: Always
           ports:

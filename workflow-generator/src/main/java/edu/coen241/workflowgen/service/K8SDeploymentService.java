@@ -1,13 +1,16 @@
 package edu.coen241.workflowgen.service;
 
 import edu.coen241.workflowgen.model.DeploymentConfiguration;
+import edu.coen241.workflowgen.model.DeploymentStatus;
 import io.fabric8.kubernetes.api.model.ServiceBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
+import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -47,6 +50,10 @@ public class K8SDeploymentService {
                             .addNewContainer()
                                 .withName(config.getSelector())
                                 .withImage(config.getDockerImage())
+                                .withImagePullPolicy("Always")
+                                .withNewResources()
+                                .addToLimits(config.getResourceLimits())
+                                .endResources()
                                 .addNewPort()
                                     .withContainerPort(config.getPort())
                                 .endPort()
@@ -60,7 +67,7 @@ public class K8SDeploymentService {
 
 
     private Integer createService(KubernetesClient client, DeploymentConfiguration config) {
-        log.info("Deploying: " + config.getServiceName());
+
         io.fabric8.kubernetes.api.model.Service service = new ServiceBuilder()
                 .withNewMetadata()
                     .withName(config.getServiceName())
@@ -75,19 +82,36 @@ public class K8SDeploymentService {
                     .addToSelector("app", config.getSelector())
                 .endSpec()
                 .build();
+        if(client.services().inNamespace(DEFAULT_NAMESPACE).withLabel("app", config.getServiceName()).list().getItems().size() > 0) {
+            log.info("Service: {} already exists. Redeploying.", config.getServiceName());
+            service = client.services().inNamespace(DEFAULT_NAMESPACE).replace(service);
+        }
+        else {
+            log.info("Deploying: {}.", config.getServiceName());
+            service = client.services().inNamespace(DEFAULT_NAMESPACE).create(service);
+        }
 
-        service = client.services().inNamespace(DEFAULT_NAMESPACE).createOrReplace(service);
         return service.getSpec().getPorts().get(0).getNodePort();
 
     }
-    public void getDeploymentStatus(String serviceName) {
+    // @formatter:on
+
+    public String getDeploymentStatus(String serviceName) {
         try (KubernetesClient client = new DefaultKubernetesClient()) {
-            log.info("checking: " + client.pods().inNamespace("default").withName(serviceName).isReady());
+            DeploymentList depList = client.apps().deployments().inNamespace(DEFAULT_NAMESPACE).withLabel("app", serviceName + "-dep").list();
+            if (!CollectionUtils.isEmpty(depList.getItems())) {
+                io.fabric8.kubernetes.api.model.apps.DeploymentStatus status = depList.getItems().get(0).getStatus();
+                if (status.getReadyReplicas() == status.getReplicas()) {
+                    return DeploymentStatus.DEPLOYED.getValue();
+                } else {
+                    return client.pods().inNamespace(DEFAULT_NAMESPACE).withLabel("app", serviceName).list().getItems().get(0).getStatus().getPhase();
+                }
+            } else {
+                return DeploymentStatus.NOT_STARTED.getValue();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
+        return DeploymentStatus.ERROR_CANNOT_GET.getValue();
     }
-    // @formatter:on
 }

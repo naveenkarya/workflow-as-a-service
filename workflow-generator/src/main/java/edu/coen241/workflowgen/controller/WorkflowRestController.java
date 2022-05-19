@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static edu.coen241.workflowgen.model.DeploymentConfiguration.SCHEDULER_CONFIG;
@@ -35,7 +33,6 @@ public class WorkflowRestController {
     K8SDeploymentService k8SDeploymentService;
     @Autowired
     WorkflowResponseMapper workflowResponseMapper;
-    ExecutorService executor = Executors.newFixedThreadPool(4);
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createWorkflowSpec(@RequestBody WorkflowSpecInfo workflowSpecInfo) {
@@ -78,13 +75,15 @@ public class WorkflowRestController {
         Optional<WorkflowSpecInfo> workflowSpecOp = workflowSpecRepository.findById(workflowSpecId);
         if (workflowSpecOp.isPresent()) {
             WorkflowSpecInfo workflowSpec = workflowSpecOp.get();
+            workflowSpec.setDeploymentStatus(DeploymentStatus.IN_PROGRESS);
+            workflowSpecRepository.save(workflowSpec);
             Iterable<TaskInfo> allTasks = taskInfoRepository.findAllById(workflowSpec.getTaskOrderList().stream().map(TaskOrder::getTaskId).collect(Collectors.toList()));
             int k = 0;
             for (TaskInfo taskInfo : allTasks) {
                 k++;
                 Integer nodePort = k8SDeploymentService.deployService(DeploymentConfiguration.fromTaskInfo(taskInfo));
                 if (nodePort != null) {
-                    log.info("NodePort: " + nodePort);
+                    log.info("NodePort for {}: {}", taskInfo.getServiceName(), nodePort);
                 }
             }
             if (k > 0) {
