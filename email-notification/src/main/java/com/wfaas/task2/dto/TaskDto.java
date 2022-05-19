@@ -6,14 +6,15 @@ public class TaskDto {
 	String workflowId;
 	String taskId;
 	Map<String, String> attributes;
-	
+	String status;
 	public TaskDto() {}
 	
-	public TaskDto(String workflowId, String taskId, Map<String, String> attributes) {
+	public TaskDto(String workflowId, String taskId, Map<String, String> attributes, String status) {
 		super();
 		this.workflowId = workflowId;
 		this.taskId = taskId;
 		this.attributes = attributes;
+		this.status = status;
 	}
 
 	public String getWorkflowId() {
@@ -39,5 +40,7 @@ public class TaskDto {
 	public void setAttributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 	}
-	
+	public String getStatus() {
+		return status;
+	}
 }

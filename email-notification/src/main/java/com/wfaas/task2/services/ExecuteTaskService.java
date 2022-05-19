@@ -64,14 +64,13 @@ public class ExecuteTaskService implements Runnable {
 				mailMessage.setSubject(EMAIL_SUBJECT);
 				mailMessage.setText(EMAIL_BODY);
 				
-				
 				// trigger email
 				javaMailSender.send(mailMessage);
 				System.out.println("Success: Email sent successfully!");
 				
 				
 				// send the response to Scheduler service
-				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes);
+				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, "COMPLETED");
 			}
 			else {
 				System.out.println("Error: Recipient email address cannot be empty!");
@@ -80,11 +79,13 @@ public class ExecuteTaskService implements Runnable {
 		catch(Exception e) {
 			System.out.println("Some error occurred in sendEmail() ::::: TriggerEmailService, "+e);
 			e.printStackTrace();
+			sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, "FAILED");
 		}
 	}
 	
 	
-	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes) {
+	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes, String status) {
+		System.out.println("Sending complete task with status: " + status);
 		System.out.println("Inside sendResponseToScheduler() :::::: ExecuteTaskService ");
 		
 		String URL = "http://scheduler-service:8080/task/complete"; // check for this URL
@@ -95,7 +96,7 @@ public class ExecuteTaskService implements Runnable {
 			headers.add(HttpHeaders.CONTENT_TYPE, "application/json");*/
 			
 			
-			TaskDto taskDto = new TaskDto(workflowId, taskId, attributes);
+			TaskDto taskDto = new TaskDto(workflowId, taskId, attributes, status);
 			
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity<TaskDto> requestEntity = new HttpEntity<TaskDto>(taskDto);
