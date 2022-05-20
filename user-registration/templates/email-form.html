@@ -4,52 +4,108 @@
 {% block styles %}
 {{ super() }}
 	<style>
-		body { background: #e8f1f9; }
+		body { 
+      background-image: url('/static/food_bckgd.jpeg');
+    }
+    .bg{
+      /*background-color: rgb(215,215,215,0.5);*/
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      left: 0px;
+      background-position: center;
+      background-repeat: repeat repeat;
+    }
+
     .inner-container{
-      margin:100px;
+      margin:75px;
       border-radius: 25px;
-      border-color:#287EC7;
+      border: 5px solid #B22222;
       background-color: white;
+      opacity: 1;
+      text-align: center;
+      padding-right: 40px;
+    }
+
+    .btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited 
+    {
+      background-color: #800020;
+      border-color: #800020;
+      min-width: 300px;
+      margin-bottom: 20px;
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,td {
+      padding: 10px;
+    }
+
+
+    .input-div{
+      margin-right: 20px;
+      size: 20;
       text-align: center;
     }
+
 	</style>
 {% endblock %}
 
 
 {% block title %}
-Email Messenger
+Food Order Form
 {% endblock %}
 
 
 {% block content %}
 
+
+<div class="bg">
 <div class="container">
+
   <div class="inner-container">
-    <div class="row">
-      <div class="col-md-20 mx-md-auto">
-        <h1 class="pt-5 pb-2">Email Messenger</h1>
+      <img src="/static/restaurant-logo.jpeg" alt="Logo" style="width:374px;height:206px;">
 
-        <p class="lead">Enter your email to see something cool happen!</p>
-        <img src="images/paper_plane.png" alt="">
+        <h1 class="pt-5 pb-2">Online Order Form</h1>
+        
         <form action="#", method="POST">
-            <div class="form-group">
-              <div class="email" style="padding-left: 50px; padding-right: 50px;">
-                
-                <label for="exampleInputEmail1">Email address</label>
-                
-                <input type="email" class="form-control input-lg" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-             
+          <table>
+            <tr>
+              <td><h3>Item</h3></td>
+              <td><h3>Price</h3></td>
+              <td><h3>Quantity</h3></td>
+            </tr>
+            <tr>
+              <td><h4>Pizza Meal</h4><p>Comes with one slice, breadsticks and a drink</p></td>
+              <td><h4>$5</td>
+              <div class="input-div">
+                <td><input type="quantity" class="form-control input-sm" id="qpizza"  name="qpizza" placeholder="Quantity"></td>
               </div>
-              <hr>
-            <button type="submit" class="btn btn-primary btn-lg" value="submit">Submit</button>
+            </tr>
+            <tr>
+              <td><h4>Hamburger Meal</h4><p>Comes with burger, fries and a drink</p></td>
+              <td><h4>$7</td>
+              <td><input type="quantity" class="form-control input-sm" id="qburger"  name="qburger" placeholder="Quantity"></td>
+            </tr>
+            <tr>
+              <td><h4>Hot Dog Meal</h4><p>Comes with hot dog, condiments and a drink</p></td>
+              <td><h4>$4</td>
+              <td><input type="quantity" class="form-control input-sm" id="qdog"  name="qdog" placeholder="Quantity"></td>
+            </tr>
+            <tr>
+              <td><h4>Milkshake</h4><p>Your choice of chocolate, vanilla, or strawberry</p></td>
+              <td><h4>$3</td>
+              <td><input type="quantity" class="form-control input-sm" id="qshake"  name="qshake" placeholder="Quantity"></td>
+            </tr>
+          </table>
+          
+          <button type="submit" name="submit" class="btn btn-primary btn-lg" value="submit">Submit</button>
         </form>
-
-        <p class="pt-5"><strong>{{ message }}</strong></p>
-
-      </div>
-    </div>
   </div>
+</div>
 </div>
 
 {% endblock %}

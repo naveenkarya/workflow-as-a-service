@@ -4,34 +4,47 @@
 {% block styles %}
 {{ super() }}
 	<style>
-		body { background: #e8f1f9; }
+		body { 
+      background-image: url('/static/food_bckgd.jpeg');
+      /*opacity: 0.5;*/
+    }
+    .bg{
+      /*background-color: rgb(215,215,215,0.5);*/
+      top: 0px;
+      bottom: 0px;
+      right: 0px;
+      left: 0px;
+    }
+
     .inner-container{
       margin:100px;
       border-radius: 25px;
-      border-color:#287EC7;
+      border: 5px solid #B22222;
       background-color: white;
       text-align: center;
+      padding: 50px;
     }
 	</style>
 {% endblock %}
 
 
 {% block title %}
-Email Registration
+Food Order Confirmation
 {% endblock %}
 
 
 {% block content %}
 
-<div class="container">
-  <div class="inner-container">
-    <div class="row">
-      <div class="col-md-20 mx-md-auto">
-        <h1 class="pt-5 pb-2">Email Messenger</h1>
-        <!-- <img src="paper_plane.png" alt=""> -->
-        <p class="lead">Form Submitted.</p>
-        <p class="lead">Please check <b>{{ email }}</b> for your message!</p>
-
+<div class="bg">
+  <div class="container">
+    <div class="inner-container">
+      <div class="row">
+        <div class="col-md-20 mx-md-auto">
+          <h1 class="pt-5 pb-2">Food Order Confirmation</h1>
+          <hr>
+          <p class="lead"><b>Thank you for your purchase <3 </p>
+          <p class="lead">Please check your email for your order confirmation!</p>
+        </div>
       </div>
     </div>
   </div>

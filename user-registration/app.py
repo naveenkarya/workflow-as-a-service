@@ -39,13 +39,25 @@ def startTask():
 ############### completeTask #################
 
 # make json and send to scheduler
-def completeTask(email, workflowid, taskid):
+def completeTask(item1, item2, item3, item4, workflowid, taskid):
+	# calculate cost
+	cost1 = int(item1) * 5
+	cost2 = int(item2) * 7
+	cost3 = int(item3) * 4
+	cost4 = int(item4) * 3
+
+	total = cost1+cost2+cost3+cost4
+
 	data = {
 		'status': 'COMPLETED',
 		'workflowId': workflowid,
 		'taskId': taskid,
 		'attributes': {
-			'email': email 
+			'Pizza Meal': item1 + '_' + str(cost1),
+			'Hamburger Meal': item2 + '_' + str(cost2),
+			'Hot Dog Meal': item3 + '_' + str(cost3),
+			'Milkshake': item4 + '_' + str(cost4),
+			'Total':  total
 		}
 	}
 	return data
@@ -58,33 +70,32 @@ def completeTask(email, workflowid, taskid):
 def task(workflowid, taskid):
 	# handle form, POST
 	if request.method == 'POST': 
-		email = request.form['email']
-		data = completeTask(email, workflowid, taskid)
-		print(data)
+		if(request.form['qpizza']):
+			item1 = request.form['qpizza']
+		else:
+			item1 = 0
+		if(request.form['qburger']):
+			item2 = request.form['qburger']
+		else:
+			item2 = 0
+		if(request.form['qdog']):
+			item3 = request.form['qdog']
+		else:
+			item3 = 0
+		if(request.form['qshake']):
+			item4 = request.form['qshake']
+		else:
+			item4 = 0
+		data = completeTask(item1, item2, item3, item4, workflowid, taskid)
 		
-		# TO DO: change the current url with the scheduler's completeTask API 
+		######  TO DO: change the current url with the scheduler's completeTask API 
 		requests.post("http://scheduler-service:8080/task/complete", json=data)
-		return render_template('submission-confirmation.html', email=email, data=data)
+
+		return render_template('submission-confirmation.html', data=data)
+	
 	# if not submitting form, display form
+	print("Not Post...")
 	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
-
-
-
-# # prints "hello python" in 1 second increments for 3 seconds.
-# @app.route("/registration/<workflowid>/<taskid>", methods=['GET'])
-# def task(workflowid, taskid):
-# 	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
-
-
-# @app.route("/email", methods=['POST', 'GET'])
-# def handle_form():
-# 	if request.method == 'POST':
-# 		email = request.form['email']
-# 		#get workflowid and taskid
-# 		completeTask()
-# 		return render_template('submission-confirmation.html', email=email)
-# 	return render_template('email-form.html')
-
 
 
 ####################### The (OLD) Microservice Task #########################
@@ -108,30 +119,4 @@ def hello():
 
 if __name__ == '__main__':
 	app.run(host="0.0.0.0", port=8080)
-
-
-################ old code ################
-# expose startTask API to scheduler
-# example url route: /startTask/123/attributes?attr1key=attr1val&attr2key=attr2val
-#taskid, workflow and attributes from body 
-#attributes part of post request
-# @app.route('/startTask', methods=['POST','GET'])
-# def startTask(workflowId, attributes):
-# 	 # query = request.args.to_dict()
-# 	 # query = jsonify(query)
-# 	 # print(query)
-# 	 if request.method =='GET':
-# 	 	return "<h1>202 Accepted - Task Started = " + workflowId
-# 	 return "202 Accepted"
-
-	
-# expose completeTask API to scheduler
-# example url route: /completeTask/123/attributes?attr1key=attr1val&attr2key=attr2val
-# @app.route('/completeTask/<workflowId>/<attributes>', methods=['GET'])
-# def completeTask(workflowId, attributes):
-# 	query = request.args.to_dict()
-# 	print(query)
-# 	if request.method =='GET':
-# 		return "<h1>202 Accepted - Task Complete = " + workflowId
-# 	return "202 Accepted"
 
