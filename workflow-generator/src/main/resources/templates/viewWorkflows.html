@@ -22,9 +22,9 @@
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <a class="nav-link" aria-current="page" href="/">Home</a>
-                        <a class="nav-link" href="/createWorkflow">Create Workflow</a>
+                        <a class="nav-link" href="/createWorkflow">Create Workflow Spec</a>
                         <a class="nav-link" href="/createTask">Create Task</a>
-                        <a class="nav-link active" href="/viewWorkflows">View Workflows</a>
+                        <a class="nav-link active" href="/viewWorkflows">View Workflow Specs</a>
                         <a class="nav-link" href="/viewTasks">View Tasks</a>
                     </div>
                 </div>
@@ -33,81 +33,117 @@
     </header>
 
     <div class="jumbotron text-center" style="padding: 25px">
-        <h1 class="display-4">View Workflows</h1>
+        <h1 class="display-4">View Workflow Specs</h1>
     </div>
 
     <main class="container" style="padding: 25px 0px 100px 0px;">
+
         <div class="workflowAccordion justify-content-center" th:each="workflowSpec: ${workflowSpecResponse}">
             <h3 th:text="${workflowSpec.name}"></h3>
             <div class="accordion-item">
-                <h4 th:text="${workflowSpec.name}"></h4>
+                <div id="message"></div>
 
                 <div class="accordion-body">
-                    <div>
-                        <h6><span>WorkflowSpec ID:</span> <span id="workflowSpecId" th:text="${workflowSpec.specId}"></span></h6>
-                    </div>
-                    <div>
-                        <h6><span>WorkflowSpec Name:</span> <span th:text="${workflowSpec.name}"></span></h6>
-                    </div>
-                    <div style="padding-bottom: 10px;">
-                        <h6><span>Deployment Status:</span> <span th:text="${workflowSpec.deploymentStatus}"></span></h6>
+                    <!-- <h3 th:text="${workflowSpec.name}"></h3> -->
+
+                    <div class="hide">
+                        <span id="workflowSpecId" th:text="${workflowSpec.specId}" />
+                        <span id="workflowSpecDeploymentStatus" th:text="${workflowSpec.deploymentStatus}" />
                     </div>
 
-                    <div style="padding: 10px 0px 0px 25px">
-                        <div th:each="task: ${workflowSpec.taskSpecList}">
-                            <div style="padding-bottom: 15px;">
-                                <h6 style="text-decoration: underline;">
-                                    <span>Task #</span><span th:text="${task.order}"></span><span>:</span>
-                                </h6>
+                    <div id="workflowSpecDetails" style="padding: 15px;">
+                        <h5 class>Workflow Spec Details:</h5>
 
-                                <div>
-                                    <h6><span>Task ID: </span><span th:text="${task.taskId}"></span></h6>
-                                </div>
-                                <div>
-                                    <h6><span>Task Name: </span><span th:text="${task.taskName}"></span></h6>
-                                </div>
-                                <div>
-                                    <h6><span>Task Order: </span><span th:text="${task.order}"></span></h6>
-                                </div>
-                                <div>
-                                    <h6><span>Service Name: </span><span th:text="${task.serviceName}"></span></h6>
-                                </div>
-                                <div>
-                                    <h6><span>NodePort: </span><span th:text="${task.nodePort}"></span></h6>
-                                </div>
-                            </div>
-                        </div>
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Workflow Spec Name</th>
+                                    <th>Deployment Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td th:text="${workflowSpec.name}"></td>
+                                    <td th:text="${workflowSpec.deploymentStatus}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="tasksDetails" style="padding: 15px;">
+                        <h5 class>Task Details:</h5>
+
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Task Order</th>
+                                    <th>Task Name</th>
+                                    <th>Service Name</th>
+                                    <th>Deployment Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="task: ${workflowSpec.taskSpecList}">
+                                    <td th:text="${task.order}"></td>
+                                    <td th:text="${task.taskName}"></td>
+                                    <td th:text="${task.serviceName}"></td>
+                                    <td th:text="${task.deploymentStatus}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
                 <div class="action-buttons" style="padding-top: 15px;">
-                    <button type="button" class="btn btn-success" onclick="deployWorkflow($(this))">Deploy Workflow</button>
+                    <button type="button" id="deployWorkflowBtn" class="btn btn-success" onclick="deployWorkflow($(this))">Deploy Workflow</button>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="bg-dark text-center text-white">
+    <footer class="bg-dark text-white">
         <div class="container p-4">
             <section class="mb-4">
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt
-                    distinctio earum repellat quaerat voluptatibus placeat nam,
-                    commodi optio pariatur est quia magnam eum harum corrupti dicta,
-                    aliquam sequi voluptate quas.
-                </p>
+                <p> > The user just needs to provide the docker images for the tasks and the order in which those tasks need to be executed. </p>
+                <p> > Our framework will create docker containers for those tasks, create workflow instances, and orchestrate the execution of tasks of that workflow. </p>
+                <p> > This will make it simple for the user to implement and manage their workflow. </p>
             </section>
         </div>
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
             © 2022 Copyright:
             <h6 class="text-white">WORKFLOW AS A SERVICE TEAM</h6>
+            <h6 class="text-white">Simplifying Your Workflows</h6>
         </div>
     </footer>
 </body>
 
 <script>
 $(document).ready(function(){
+	// form Accordions
 	$(".workflowAccordion" ).accordion();
+
+    var workflowCount = $('.accordion-item').length;
+    if(workflowCount > 0){
+        // to hide deploy workflow button based on status
+        $('.accordion-item').each(function(id, obj){
+            var workflowSpecId = $(obj).find('#workflowSpecId').text();
+            var deploymentStatus = $(obj).find('#workflowSpecDeploymentStatus').text();
+
+            if(deploymentStatus !== null && deploymentStatus === 'Deployed'){
+                $(obj).find('button#deployWorkflowBtn').attr('disabled', true);
+            }
+        });
+    }
+    else{
+        var noElements =
+            '<div class="error-msg justify-content-center" style="text-align: center">'
+                +'<h2> No Records found for Workflow Specs </h2>'
+            +'<div>';
+
+        $('main.container').html(noElements);
+        $('main.container').css('padding', '25px 0px 175px 0px');
+    }
+
 
     // on click of accordion - collapse / expand
 	$('.ui-accordion-header').on('click', function(){

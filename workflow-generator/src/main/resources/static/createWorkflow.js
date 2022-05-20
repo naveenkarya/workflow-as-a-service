@@ -21,6 +21,7 @@ $(function () {
     for(task of allTasks) {
         $(".dropdown-menu").append(`<li class="dropdown-item" data-taskId="${task.id}">${task.taskName}</li>`);
     }
+
     $(document).on('click', '.dropdown-menu li', function() {
         const selectedElement = $(this);
         parentDropdownMenu = selectedElement.parent();
@@ -69,11 +70,12 @@ $(function () {
                contentType : 'application/json',
                encode: true,
                success: function (response) {
-                   html = [];
-                   html.push('<div class="alert alert-primary" role="alert">');
-                   html.push('Workflow Specification Created.');
-                   html.push('</div>');
-                   $("#createWorkflowSpec").replaceWith(html.join(""));
+                   var msg = '<span class="alert alert-primary" role="alert" style="padding: 5px;">'
+                               +'Workflow Spec Created!'
+                           +'</span>';
+
+                   $('#createWorkflowSpec').find('#message').html(msg);
+                   $('#createWorkflowSpec').find('#message').removeClass('hide');
                },
                error: function (x, e) {
                    console.log(e);
@@ -97,26 +99,43 @@ $(function () {
 
 function deployWorkflow(obj){
     var workflowAccItem = $(obj).parents('div.accordion-item');
-    var workflowSpecId = $(workflowAccItem).find('span#workflowSpecId').text();
+    var workflowSpecId = $(workflowAccItem).find('#workflowSpecId').text();
+    var deploymentStatus = $(workflowAccItem).find('#workflowSpecDeploymentStatus').text();
 
     data = {
         'workflowSpecId': workflowSpecId
     };
 
+
     if(workflowSpecId != null && workflowSpecId.length > 0){
+        if(deploymentStatus !== null && deploymentStatus === 'Deployed'){
+            // alert('WorkflowSpec is already deployed!');
+            return;
+        }
+
         $.ajax({
-           type: "POST",
+           type: "GET",
            url: '/'+workflowSpecId+'/deploy',
            data: JSON.stringify(data),
            dataType: "json",
            contentType : 'application/json',
            encode: true,
            success: function (response) {
-               alert('Workflow Specification is deployed');
-               $('.navbar-nav').find('a.active').trigger('click');
+               // alert('Workflow Spec is deployed');
+
+               var message =
+                    '<div class="alert alert-primary" role="alert">'
+                        +'Workflow Specification Deployed!'
+                    +'</div>';
+
+               $(workflowAccItem).find('#message').html(message);
+
+               setTimeout(() => {
+                    $('.navbar-nav').find('a.active').trigger('click');
+               }, 2000);
            },
-           error: function (x, e) {
-               console.log('some error occurred inside deployWorkflow() :::: createWorkflow.js, error = '+e);
+           error: function(err) {
+               console.log('some error occurred inside deployWorkflow() :::: createWorkflow.js, error = '+err);
            }
         });
     }

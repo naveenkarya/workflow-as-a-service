@@ -25,6 +25,7 @@ $(function () {
             }
         });
     }
+
     $("#createTaskSubmit").click(function (event) {
         event.preventDefault();
         taskName = $("#taskName").val();
@@ -34,6 +35,7 @@ $(function () {
         memoryLimit = $("#memoryLimit").val();
         nodePort = $("#nodePort").val();
         url = `/task/add`;
+
         data = {
             taskName: taskName,
             serviceName: serviceName,
@@ -42,6 +44,7 @@ $(function () {
             memoryLimit: memoryLimit,
             nodePort: parseInt(nodePort)
         }
+
         $.ajax({
             type: "POST",
             url: url,
@@ -50,17 +53,17 @@ $(function () {
             contentType : 'application/json',
             encode: true,
             success: function (response) {
-                html = [];
-                html.push('<div class="alert alert-primary" role="alert">');
-                html.push('Task Created. What next!');
-                html.push('</div>');
-                $("#addTask").replaceWith(html.join(""));
+                var msg = '<span class="alert alert-primary" role="alert" style="padding: 5px;">'
+                            +'Task Created!'
+                        +'</span>';
+
+                $('#addTask').find('#message').html(msg);
+                $('#addTask').find('#message').removeClass('hide');
             },
             error: function (x, e) {
                 console.log(e);
             }
         });
-
     });
 
 });
