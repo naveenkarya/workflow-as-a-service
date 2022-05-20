@@ -1,4 +1,4 @@
-package com.wfaas.task2.dto;
+package com.wfaas.email.notification.dto;
 
 import java.util.Map;
 
@@ -7,6 +7,7 @@ public class TaskDto {
 	String taskId;
 	Map<String, String> attributes;
 	String status;
+	
 	public TaskDto() {}
 	
 	public TaskDto(String workflowId, String taskId, Map<String, String> attributes, String status) {

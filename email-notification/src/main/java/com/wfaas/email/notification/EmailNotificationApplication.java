@@ -1,13 +1,13 @@
-package com.wfaas.task2;
+package com.wfaas.email.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class Task2Application {
+public class EmailNotificationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Task2Application.class, args);
+		SpringApplication.run(EmailNotificationApplication.class, args);
 	}
 
 }
