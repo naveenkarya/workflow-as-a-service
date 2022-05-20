@@ -1,5 +1,13 @@
+#################################################
 # Flask Python Microservice 
 # Chelsea Fernandes
+# Purpose: 	Makes startTask API accesible to Scheduler to begin task
+#			Displays an Online Restaurant Order Form page
+#			Processes Form Data to JSON format
+#			Sends JSON data 
+#			alerts Scheduler that task is complete via completeTask 
+#			Routes user to submission confirmation
+#################################################
 
 from flask import Flask, request, redirect, Response, render_template, flash, url_for
 from flask_bootstrap import Bootstrap
@@ -29,7 +37,6 @@ def startTask():
 		data = request.get_json()
 		url = "/registration/" + str(data['workflowId']) + "/" + str(data['taskId'])
 		#return url instead (reg)
-		print(url)
 		return {"url" : url}
 	if request.method == 'GET':
 		return 'No workflow data provided'
@@ -94,7 +101,6 @@ def task(workflowid, taskid):
 		return render_template('submission-confirmation.html', data=data)
 	
 	# if not submitting form, display form
-	print("Not Post...")
 	return render_template('email-form.html', workflowid=workflowid, taskid=taskid)
 
 
