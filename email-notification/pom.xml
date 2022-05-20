@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wfaas</groupId>
-	<artifactId>email-notification</artifactId>
+	<artifactId>email.notification</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>email-notification</name>
 	<description>Email notification for Workflow as a Service (WFaaS)</description>

@@ -1,5 +1,7 @@
 package com.wfaas.email.notification.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -16,16 +18,21 @@ import com.wfaas.email.notification.dto.TaskDto;
 
 public class EmailNotificationExecuteTaskService implements Runnable {
 	
-	// Task: Send email notification
+	// Task based Constants
+	private static final String EMAIL = "email";
+
+	private static final String MEAL_1 = "Pizza Meal";
+	private static final String MEAL_2 = "Hamburger Meal";
+	private static final String MEAL_3 = "Hot Dog Meal";
+	private static final String MEAL_4 = "Milkshake";
+	private static final List<String> ITEMS_LIST = Arrays.asList(MEAL_1, MEAL_2, MEAL_3, MEAL_4);
+	private static final String TOTAL_BILL = "Total";
 	
-	private static final String EMAIL_SUBJECT = "Workflow as a Service email : Successfully registered";
-	private static final String EMAIL_BODY = "You are receiving this email since you have just registered for the service!\n\n"
-											+ "Thanks and Regards\n"
-											+ "Workflow as a Services Team";
-	
+	private static final String TAB = "\t\t";
+	private static final String NEW_LINE = "\n";
 
 	
-	@Value("${spring.mail.username}") private String sender;
+	@Value("${spring.mail.username}") private String senderEmailId;
 	
 	private JavaMailSenderImpl javaMailSender;
 	private String workflowId;
@@ -43,35 +50,38 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 	
 	@Override
 	public void run() {
+		try {
+			Thread.sleep(10000);
+		} 
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		// Define and program your task here
 		sendEmail();
 	}
 	
 	
-	// Task - Send email 
+	// Task - Send email notification
 	private void sendEmail() {
 		System.out.println("\nInside sendEmail() :::::: EmailNotificationExecuteTaskService ");
 		System.out.println("workflowId="+workflowId +", taskId="+taskId +", attributes="+attributes);
 		
 		try {
-			String emailId = this.attributes.containsKey("email") ? this.attributes.get("email") : null;
-			System.out.println("Recipient email address = "+emailId);
+			String recipientEmailId = this.attributes.containsKey(EMAIL) ? this.attributes.get(EMAIL) : null;
+			System.out.println("Recipient email address = "+recipientEmailId);
 			
-			if(emailId != null && emailId.length() > 0) {
+			if(recipientEmailId != null && recipientEmailId.length() > 0) {
 				
-				boolean isValidEmailId = isValidEmail(emailId);
+				// Validate recipient email id
+				boolean isValidEmailId = isValidEmail(recipientEmailId);
 				
 				if(isValidEmailId) {
-					SimpleMailMessage mailMessage = new SimpleMailMessage();
-					
-					// set all the required attributes for the email
-					mailMessage.setFrom(sender);
-					mailMessage.setTo(emailId);
-					mailMessage.setSubject(EMAIL_SUBJECT);
-					mailMessage.setText(EMAIL_BODY);
+					// Compose email
+					SimpleMailMessage mail = composeEmail(senderEmailId, recipientEmailId, this.attributes);					
 					
 					// trigger email
-					javaMailSender.send(mailMessage);
+					javaMailSender.send(mail);
 					System.out.println("Success: Email sent successfully!");
 					
 					
@@ -105,6 +115,81 @@ public class EmailNotificationExecuteTaskService implements Runnable {
         
         return pat.matcher(email).matches();
     }
+	
+	
+	public SimpleMailMessage composeEmail(String fromEmailId, String toEmailId, Map<String, String> attributes) {
+		SimpleMailMessage mail = new SimpleMailMessage();
+		
+		try {
+			// set all the required attributes for the email
+			mail.setFrom(fromEmailId);
+			mail.setTo(toEmailId);
+			
+			String emailSubject = "Receipt detals for your food order ";
+			mail.setSubject(emailSubject);
+			
+			String emailBody = 
+				"Hello Customer,"+NEW_LINE +NEW_LINE
+				+"Details of your food order is as follows: "+NEW_LINE +NEW_LINE
+					+formOrderDetails(attributes)
+					
+					+"Thank you for ordering with us.. See you again!"+NEW_LINE+NEW_LINE
+				
+				+ "Thanks and Regards"+NEW_LINE
+				+ "Restaurant Team";
+			
+			mail.setText(emailBody);
+		}
+		catch(Exception e) {
+			System.out.println("\n\nSome error occurred in composeEmail() ::::: EmailNotificationExecuteTaskService, "+e);
+			e.printStackTrace();
+		}
+
+		return mail;
+	}
+	
+	
+	public String formOrderDetails(Map<String, String> attributes) {
+		String orderDetails = "Sl No."+TAB +"Item Name"+TAB +"Quantity"+TAB +"Price"+TAB +NEW_LINE;
+		String seperator = "_";
+		
+		try{
+			int index = 1;
+			
+			for(Map.Entry<String, String> order : attributes.entrySet()) {
+				String item = order.getKey();
+				String value = order.getValue();
+				
+				if(ITEMS_LIST.contains(item)) {
+					String valueArr[] = value.split(seperator);
+					String quantity = valueArr[0];
+					String price = valueArr[1];
+					
+					if(index == 1 || index == 4) {
+						quantity = "        " +quantity;
+						price = "        " +price;
+					}else if(index == 2) {
+						quantity = "   " +quantity;
+						price = "          " +price;
+					}else if(index == 3) {
+						quantity = "      " +quantity;
+						price = "             " +price;
+					}
+					
+					orderDetails += index+TAB +item+TAB +quantity+TAB +price+"$"+TAB +NEW_LINE;
+					index++;
+				}
+			}
+			
+			orderDetails += "Total"+TAB +attributes.get(TOTAL_BILL)+"$" +NEW_LINE +NEW_LINE +NEW_LINE;
+		}
+		catch(Exception e) {
+			System.out.println("\n\nSome error occurred in formOrderDetails() ::::: EmailNotificationExecuteTaskService, "+e);
+			e.printStackTrace();
+		}
+		
+		return orderDetails;
+	}
 	
 	
 	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes, String status) {
