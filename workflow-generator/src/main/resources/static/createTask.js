@@ -28,6 +28,7 @@ $(function () {
 
     $("#createTaskSubmit").click(function (event) {
         event.preventDefault();
+        $(".alert").remove();
         taskName = $("#taskName").val();
         serviceName = $("#serviceName").val();
         dockerImage = $("#dockerImage").val();
@@ -61,9 +62,19 @@ $(function () {
                 $('#addTask').find('#message').removeClass('hide');
             },
             error: function (x, e) {
-                console.log(e);
+                let errorMessage = "Error Occurred. Please check with the admin."
+                if(x.responseJSON && x.responseJSON.message) {
+                    errorMessage = x.responseJSON.message
+                }
+                html = [];
+                html.push('<div id="create-error" class="alert alert-danger" role="alert">');
+                html.push(errorMessage);
+                html.push('</div>');
+                $("#addTask").prepend(html.join(""));
+                $("#create-error").focus();
             }
         });
+
     });
 
 });

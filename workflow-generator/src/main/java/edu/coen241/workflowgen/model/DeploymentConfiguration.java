@@ -39,7 +39,7 @@ public class DeploymentConfiguration {
                 .selector("workflow-ui")
                 .deploymentName("workflow-ui-deployment")
                 .serviceType(NODE_PORT)
-                .nodePort(30000)
+                .nodePort(30001)
                 .port(DEFAULT_SERVICE_PORT)
                 .build();
     }
@@ -51,7 +51,8 @@ public class DeploymentConfiguration {
                 .serviceName("scheduler-service")
                 .selector("scheduler-service")
                 .deploymentName("scheduler-deployment")
-                .serviceType(CLUSTER_IP)
+                .nodePort(30002)
+                .serviceType(NODE_PORT)
                 .port(DEFAULT_SERVICE_PORT)
                 .build();
     }

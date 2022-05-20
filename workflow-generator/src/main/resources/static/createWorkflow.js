@@ -21,7 +21,6 @@ $(function () {
     for(task of allTasks) {
         $(".dropdown-menu").append(`<li class="dropdown-item" data-taskId="${task.id}">${task.taskName}</li>`);
     }
-
     $(document).on('click', '.dropdown-menu li', function() {
         const selectedElement = $(this);
         parentDropdownMenu = selectedElement.parent();
@@ -102,11 +101,6 @@ function deployWorkflow(obj){
     var workflowSpecId = $(workflowAccItem).find('#workflowSpecId').text();
     var deploymentStatus = $(workflowAccItem).find('#workflowSpecDeploymentStatus').text();
 
-    data = {
-        'workflowSpecId': workflowSpecId
-    };
-
-
     if(workflowSpecId != null && workflowSpecId.length > 0){
         if(deploymentStatus !== null && deploymentStatus === 'Deployed'){
             // alert('WorkflowSpec is already deployed!');
@@ -115,17 +109,13 @@ function deployWorkflow(obj){
 
         $.ajax({
            type: "GET",
-           url: '/'+workflowSpecId+'/deploy',
-           data: JSON.stringify(data),
-           dataType: "json",
-           contentType : 'application/json',
-           encode: true,
+           url: `/workflowSpec/${workflowSpecId}/deploy`,
            success: function (response) {
                // alert('Workflow Spec is deployed');
 
                var message =
                     '<div class="alert alert-primary" role="alert">'
-                        +'Workflow Specification Deployed!'
+                        +'Deploying Workflow Specification!'
                     +'</div>';
 
                $(workflowAccItem).find('#message').html(message);

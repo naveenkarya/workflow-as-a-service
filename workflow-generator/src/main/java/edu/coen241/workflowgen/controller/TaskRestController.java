@@ -36,6 +36,9 @@ public class TaskRestController {
         if(!taskInfo.isMemoryLimitValid()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Memory limit invalid"));
         }
+        if(!taskInfo.isNodePortValid()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "Invalid Node Port. Should be in range 30003 - 32767"));
+        }
         taskInfoRepository.save(taskInfo);
         Map<String, String> result = new HashMap<>();
         result.put("taskId", taskInfo.getId());

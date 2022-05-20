@@ -57,4 +57,10 @@ public class TaskInfo {
         }
         return true;
     }
+
+    public boolean isNodePortValid() {
+        if(nodePort == null) return true;
+        if(nodePort >= 30003 && nodePort <= 32767) return true;
+        return false;
+    }
 }
