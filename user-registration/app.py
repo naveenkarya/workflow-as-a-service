@@ -80,19 +80,19 @@ def task(workflowid, taskid):
 		if(request.form['qpizza']):
 			item1 = request.form['qpizza']
 		else:
-			item1 = 0
+			item1 = '0'
 		if(request.form['qburger']):
 			item2 = request.form['qburger']
 		else:
-			item2 = 0
+			item2 = '0'
 		if(request.form['qdog']):
 			item3 = request.form['qdog']
 		else:
-			item3 = 0
+			item3 = '0'
 		if(request.form['qshake']):
 			item4 = request.form['qshake']
 		else:
-			item4 = 0
+			item4 = '0'
 		data = completeTask(item1, item2, item3, item4, workflowid, taskid)
 		
 		######  TO DO: change the current url with the scheduler's completeTask API 

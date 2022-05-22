@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask-dock
-        image: nevin160/flask-dock:registration
+        image: chelccelia/flask-dock:order-food
         imagePullPolicy: Always 
         ports:
         - containerPort: 8080
