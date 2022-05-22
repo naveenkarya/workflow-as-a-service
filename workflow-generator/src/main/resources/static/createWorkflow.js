@@ -101,7 +101,7 @@ function deployWorkflow(obj){
     var workflowSpecId = $(workflowAccItem).find('#workflowSpecId').text();
     var deploymentStatus = $(workflowAccItem).find('#workflowSpecDeploymentStatus').text();
 
-    if(workflowSpecId != null && workflowSpecId.length > 0){
+    if(workflowSpecId != null && workflowSpecId.length > 0) {
         if(deploymentStatus !== null && deploymentStatus === 'Deployed'){
             // alert('WorkflowSpec is already deployed!');
             return;
@@ -111,7 +111,6 @@ function deployWorkflow(obj){
            type: "GET",
            url: `/workflowSpec/${workflowSpecId}/deploy`,
            success: function (response) {
-               // alert('Workflow Spec is deployed');
 
                var message =
                     '<div class="alert alert-primary" role="alert">'
@@ -122,7 +121,7 @@ function deployWorkflow(obj){
 
                setTimeout(() => {
                     $('.navbar-nav').find('a.active').trigger('click');
-               }, 2000);
+               }, 1000);
            },
            error: function(err) {
                console.log('some error occurred inside deployWorkflow() :::: createWorkflow.js, error = '+err);
