@@ -89,19 +89,19 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.COMPLETED, "Task is successfully completed");
 				}
 				else {
-					String statusMessage = "Error: Email address entered is not in proper format! Please check!";
+					String statusMessage = "Invalid Email address! Please check!";
 					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, statusMessage);
 				}
 			}
 			else {
-				String statusMessage = "Error: Email address cannot be empty! Please check!";
+				String statusMessage = "Email address cannot be empty! Please check!";
 				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, statusMessage);
 			}
 		}
 		catch(Exception e) {
 			System.out.println("\n\nSome error occurred in sendEmail() ::::: EmailNotificationExecuteTaskService, "+e);
 			e.printStackTrace();
-			sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, "Error: Some exception occurred while sending email. Please check logs for more information!");
+			sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, "Some exception occurred while sending email. Please check logs for more information!");
 		}
 	}
 	
@@ -154,30 +154,28 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 		String seperator = "_";
 		
 		try{
-			int index = 1;
-			
-			for(Map.Entry<String, String> order : attributes.entrySet()) {
-				String item = order.getKey();
-				String value = order.getValue();
+			for(int index = 0; index < ITEMS_LIST.size(); index++) {
+				String item = ITEMS_LIST.get(index);
 				
 				if(ITEMS_LIST.contains(item)) {
+					String value = attributes.get(item);
+					
 					String valueArr[] = value.split(seperator);
 					String quantity = valueArr[0];
 					String price = valueArr[1];
 					
-					if(index == 1 || index == 4) {
+					if(index == 0 || index == 3) {
 						quantity = "        " +quantity;
 						price = "        " +price;
-					}else if(index == 2) {
+					}else if(index == 1) {
 						quantity = "   " +quantity;
 						price = "          " +price;
-					}else if(index == 3) {
+					}else if(index == 2) {
 						quantity = "      " +quantity;
 						price = "             " +price;
 					}
 					
-					orderDetails += index+TAB +item+TAB +quantity+TAB +price+"$"+TAB +NEW_LINE;
-					index++;
+					orderDetails += (index+1)+TAB +item+TAB +quantity+TAB +price+"$"+TAB +NEW_LINE;
 				}
 			}
 			
