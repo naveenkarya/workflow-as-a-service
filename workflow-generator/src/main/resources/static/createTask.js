@@ -46,35 +46,46 @@ $(function () {
             nodePort: parseInt(nodePort)
         }
 
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: JSON.stringify(data),
-            dataType: "json",
-            contentType : 'application/json',
-            encode: true,
-            success: function (response) {
-                var msg = '<span class="alert alert-primary" role="alert" style="padding: 5px;">'
-                            +'Task Created!'
-                        +'</span>';
+        if(taskName != null && taskName.length > 0 && serviceName != null && serviceName.length > 0 &&
+            dockerImage != null && dockerImage.length > 0){
 
-                $('#addTask').find('#message').html(msg);
-                $('#addTask').find('#message').removeClass('hide');
-            },
-            error: function (x, e) {
-                let errorMessage = "Error Occurred. Please check with the admin."
-                if(x.responseJSON && x.responseJSON.message) {
-                    errorMessage = x.responseJSON.message
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType : 'application/json',
+                encode: true,
+                success: function (response) {
+                    var msg = '<span class="alert alert-primary" role="alert" style="padding: 5px;">'
+                                +'Task Created!'
+                            +'</span>';
+
+                    $('#addTask').find('#message').html(msg);
+                    $('#addTask').find('#message').removeClass('hide');
+                },
+                error: function (x, e) {
+                    let errorMessage = "Error Occurred. Please check with the admin."
+                    if(x.responseJSON && x.responseJSON.message) {
+                        errorMessage = x.responseJSON.message
+                    }
+                    html = [];
+                    html.push('<div id="create-error" class="alert alert-danger" role="alert">');
+                    html.push(errorMessage);
+                    html.push('</div>');
+                    $("#addTask").prepend(html.join(""));
+                    $("#create-error").focus();
                 }
-                html = [];
-                html.push('<div id="create-error" class="alert alert-danger" role="alert">');
-                html.push(errorMessage);
-                html.push('</div>');
-                $("#addTask").prepend(html.join(""));
-                $("#create-error").focus();
-            }
-        });
+            });
+        }
+        else{
+            var msg = '<span class="alert alert-primary" role="alert" style="padding: 5px;">'
+                            +'Missing mandatory fields!'
+                     +'</span>';
 
+            $('#addTask').find('#message').html(msg);
+            $('#addTask').find('#message').removeClass('hide');
+        }
     });
 
 });

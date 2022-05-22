@@ -38,17 +38,20 @@
                 <h5 class="card-title">Add a Task</h5>
                 <div id="message" class="hide" style="padding-bottom: 20px;"></div>
 
+                <div class="mb-2">
+                    <label for="taskName">Fields marked with * are mandatory </label>
+                </div>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="taskName" placeholder="Task Name">
-                    <label for="taskName">Task Name</label>
+                    <label for="taskName">Task Name <span class="mandatory">*</span></label>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="serviceName" placeholder="Service Name">
-                    <label for="serviceName">Service Name</label>
+                    <label for="serviceName">Service Name <span class="mandatory">*</span></label>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="dockerImage" placeholder="Docker Image">
-                    <label for="dockerImage">Docker Image</label>
+                    <label for="dockerImage">Docker Image <span class="mandatory">*</span></label>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="cpuLimit" placeholder="CPU Limit">
