@@ -27,6 +27,8 @@ public class TaskInstance {
     @DynamoDBAttribute
     private Status status;
     @DynamoDBAttribute
+    private String statusMessage;
+    @DynamoDBAttribute
     private String url;
     @DynamoDBAttribute
     private Integer nodePort;

@@ -16,5 +16,6 @@ public class CompleteTaskDto {
     String workflowId;
     String taskId;
     Status status;
+    String statusMessage;
     Map<String, String> attributes;
 }

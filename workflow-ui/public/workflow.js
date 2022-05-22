@@ -72,6 +72,9 @@ $(function () {
 
                     }
                     if (task.status == 'FAILED') {
+                        if(task.statusMessage) {
+                            title = title + `<br/><span>Reason: ${task.statusMessage}</span>`;
+                        }
                         title = title + `<br/><span class='retry btn btn-outline-primary' id='${workflowId}::${task.taskId}'>Retry</span>`;
                     }
                     html.push(`<span class="task-circle color-${task_status_color}" data-toggle="tooltip" title="${title}"></span>`);

@@ -117,7 +117,10 @@ public class SchedulerService {
         } else {
             workflow.getTaskInstanceList().stream()
                     .filter(taskSpec -> taskSpec.getTaskId().equals(completeTaskDto.getTaskId()))
-                    .forEach(taskInstance -> taskInstance.setStatus(Status.FAILED));
+                    .forEach(taskInstance -> {
+                            taskInstance.setStatus(Status.FAILED);
+                            taskInstance.setStatusMessage(completeTaskDto.getStatusMessage());
+                    });
         }
 
         workflow.setUpdatedAt(Instant.now().toString());
