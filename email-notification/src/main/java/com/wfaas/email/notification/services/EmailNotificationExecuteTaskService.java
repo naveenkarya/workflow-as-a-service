@@ -86,22 +86,22 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 					
 					
 					// send the response as Task Completed to Scheduler service
-					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.COMPLETED);
+					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.COMPLETED, "Task is successfully completed");
 				}
 				else {
-					System.out.println("Email Id is not in proper format! Please check!");
-					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED);
+					String statusMessage = "Error: Email address entered is not in proper format! Please check!";
+					sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, statusMessage);
 				}
 			}
 			else {
-				System.out.println("Error: Email address cannot be empty!");
-				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED);
+				String statusMessage = "Error: Email address cannot be empty! Please check!";
+				sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, statusMessage);
 			}
 		}
 		catch(Exception e) {
 			System.out.println("\n\nSome error occurred in sendEmail() ::::: EmailNotificationExecuteTaskService, "+e);
 			e.printStackTrace();
-			sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED);
+			sendResponseToScheduler(this.workflowId, this.taskId, this.attributes, TaskStatus.FAILED, "Error: Some exception occurred while sending email. Please check logs for more information!");
 		}
 	}
 	
@@ -192,14 +192,14 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 	}
 	
 	
-	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes, String status) {
+	public void sendResponseToScheduler(String workflowId, String taskId, Map<String, String> attributes, String status, String statusMesage) {
 		System.out.println("\nInside sendResponseToScheduler() :::::: EmailNotificationExecuteTaskService ");
 		
 		String URL = "http://scheduler-service:8080/task/complete"; // Scheduler Service URL
 		System.out.println("URL to send POST request to Scheduler service: "+URL);
 		
 		try {
-			TaskDto taskDto = new TaskDto(workflowId, taskId, attributes, status);
+			TaskDto taskDto = new TaskDto(workflowId, taskId, attributes, status, statusMesage);
 			
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity<TaskDto> requestEntity = new HttpEntity<TaskDto>(taskDto);
