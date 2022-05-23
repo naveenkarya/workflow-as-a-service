@@ -63,6 +63,11 @@ $(function () {
 
                     $('#addTask').find('#message').html(msg);
                     $('#addTask').find('#message').removeClass('hide');
+
+                    // clear the create task form
+                    $('div#addTask').find('input').each(function(ind, obj) {
+                        $(obj).val('');
+                    });
                 },
                 error: function (x, e) {
                     let errorMessage = "Error Occurred. Please check with the admin."

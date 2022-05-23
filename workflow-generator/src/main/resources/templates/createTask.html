@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Workflow</title>
+    <title>Workflow Specification</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -18,10 +18,10 @@
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <a class="nav-link" aria-current="page" href="/">Home</a>
-                        <a class="nav-link" href="/createWorkflow">Create Workflow Spec</a>
                         <a class="nav-link active" href="/createTask">Create Task</a>
-                        <a class="nav-link" href="/viewWorkflows">View Workflow Specs</a>
+                        <a class="nav-link" href="/createWorkflow">Create Workflow Spec</a>
                         <a class="nav-link" href="/viewTasks">View Tasks</a>
+                        <a class="nav-link" href="/viewWorkflows">View Workflow Specs</a>
                     </div>
                 </div>
             </div>
@@ -35,11 +35,10 @@
     <main class="container" style="width: 50%; padding: 25px 0px 200px 0px;">
         <div class="card justify-content-center" style="padding: 15px;">
             <div id="addTask" class="card-body content-centered">
-                <h5 class="card-title">Add a Task</h5>
                 <div id="message" class="hide" style="padding-bottom: 20px;"></div>
 
-                <div class="mb-2">
-                    <label for="taskName">Fields marked with * are mandatory </label>
+                <div style="padding-bottom: 25px;">
+                    <label for="taskName">Note: Fields marked with <span class="mandatory">*</span> are mandatory </label>
                 </div>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="taskName" placeholder="Task Name">
@@ -65,7 +64,7 @@
                     <input type="text" class="form-control" id="nodePort" placeholder="Node Port">
                     <label for="nodePort">Port number in range 30003 - 32767. Use only if service needs to be exposed outside cluster</label>
                 </div>
-                <div style="padding-top: 35px;">
+                <div style="padding-top: 30px;">
                     <button id= "createTaskSubmit" type="submit" class="btn btn-primary mb-3">Create Task</button>
                 </div>
             </div>
