@@ -133,10 +133,8 @@ $(document).ready(function(){
                 $(obj).find('button#deployWorkflowBtn').attr('disabled', true);
             }
 
-
             $(obj).find('h3.ui-accordion-header').css('background-color', 'black');
-            $(obj).find('span.ui-accordion-header-icon').removeClass('ui-icon-triangle-1-s');
-            $(obj).find('span.ui-accordion-header-icon').addClass('ui-icon-triangle-1-e');
+            $(obj).find('span.ui-accordion-header-icon').removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
         });
     }
     else{
