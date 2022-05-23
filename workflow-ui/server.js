@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const PORT = 8080;
 const HOST = '0.0.0.0';
 const schedulerServiceUrl = "http://scheduler-service:8080";
-const backendServiceUrl = "http://workflow-gen-service:8080";
+const backendServiceUrl = "http://workflow-spec-service:8080";
 // App
 
 const app = express();

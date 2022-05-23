@@ -1,12 +1,12 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: workflow-gen-service
+  name: workflow-spec-service
   labels:
-    app: workflow-gen-service
+    app: workflow-spec-service
 spec:
   selector:
-    app: workflow-gen
+    app: workflow-spec
   ports:
     - protocol: TCP
       port: 8080
@@ -16,23 +16,23 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: workflow-gen-deployment
+  name: workflow-spec-deployment
   labels:
-    app: workflow-gen-deployment
+    app: workflow-spec-deployment
 spec:
   selector:
     matchLabels:
-      app: workflow-gen
+      app: workflow-spec
   replicas: 1
   template:
     metadata:
       labels:
-        app: workflow-gen
+        app: workflow-spec
     spec:
       serviceAccountName: edit-access
       containers:
-        - name: workflow-gen
-          image: nevin160/workflow-generator
+        - name: workflow-spec
+          image: nevin160/workflow-specification
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -40,20 +40,20 @@ spec:
             - name: MONGO_DB
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-gen-config
+                  name: workflow-spec-config
                   key: db-name
             - name: MONGO_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-gen-config
+                  name: workflow-spec-config
                   key: db-host
             - name: workflow-ui-docker-image
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-gen-config
+                  name: workflow-spec-config
                   key: workflow-ui-docker-image
             - name: scheduler-service-docker-image
               valueFrom:
                 configMapKeyRef:
-                  name: workflow-gen-config
+                  name: workflow-spec-config
                   key: scheduler-service-docker-image

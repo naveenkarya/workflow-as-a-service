@@ -20,8 +20,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
-      imagePullSecrets:
-      - name: n-regcred
 
 ---
 
@@ -35,6 +33,6 @@ spec:
   type: NodePort
   ports:
   - port: 8080
-    nodePort: 30000
+    nodePort: 30001
   selector:
     app: workflow-ui
