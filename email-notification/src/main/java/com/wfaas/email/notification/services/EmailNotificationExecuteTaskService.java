@@ -30,6 +30,8 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 	
 	private static final String TAB = "\t\t";
 	private static final String NEW_LINE = "\n";
+	
+	private static final int DELAY_IN_MS = 5000;
 
 	
 	@Value("${spring.mail.username}") private String senderEmailId;
@@ -51,7 +53,7 @@ public class EmailNotificationExecuteTaskService implements Runnable {
 	@Override
 	public void run() {
 		try {
-			Thread.sleep(10000);
+			Thread.sleep(DELAY_IN_MS);
 		} 
 		catch (InterruptedException e) {
 			e.printStackTrace();
